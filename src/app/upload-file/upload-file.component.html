@@ -1,18 +1,38 @@
-<form [formGroup]="uploadFileForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <label for="file">Requirements file</label>
-    <input type="file" id="file" (change)="onFileChange($event)" #fileInput formControlName="file">
-    <!-- <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button> -->
-  </div>
-  <button type="submit" class="btn btn-success">Process file</button>
-</form>
+<div class="container">
 
-<div *ngIf="requirements">
-   <h3>Requirements</h3>
-  <ul>
-    <li *ngFor="let req of requirements">
-      {{req}}
-    </li>
-  </ul>
-  
+  <form [formGroup]="uploadFileForm" (ngSubmit)="onSubmit()"
+        class="mainbox col-md-6" style="margin:auto">
+    
+    <div class="form-group">
+      <!-- <label for="file">Requirements file</label>
+    <input type="file" id="file" (change)="onFileChange($event)" #fileInput formControlName="file"> -->
+
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroupFileAddon01">Requirements file</span>
+        </div>
+        <div class="custom-file">
+          <input type="file" (change)="onFileChange($event)" class="custom-file-input" id="file"
+            aria-describedby="inputGroupFileAddon01" #fileInput formControlName="file">
+          <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+        </div>
+        <button type="button" class="btn btn-light" (click)="clearFile()">Clear file</button>
+      </div>
+
+    </div>
+    <button type="submit" class="btn btn-success">Process file</button>
+  </form>
+
+
+
+  <br /><br />
+  <div *ngIf="requirements" class="container">
+    <h3>Requirements</h3>
+    <ul>
+      <li *ngFor="let req of requirements">
+        {{req}}
+      </li>
+    </ul>
+  </div>
+
 </div>

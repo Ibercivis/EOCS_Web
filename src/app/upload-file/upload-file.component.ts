@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
@@ -7,7 +7,7 @@ import { FormGroup, FormControl } from '@angular/forms';
   styleUrls: ['./upload-file.component.css']
 })
 export class UploadFileComponent implements OnInit {
-
+  
   uploadFileForm;
   requirements;
   private contentFile;
@@ -39,6 +39,12 @@ export class UploadFileComponent implements OnInit {
         this.contentFile = this.contentFile.split(/\n/);
      };
     }
+  }
+
+  clearFile() {
+    this.contentFile = "";
+    this.requirements = ""; 
+    this.uploadFileForm.reset();
   }
 
 }
