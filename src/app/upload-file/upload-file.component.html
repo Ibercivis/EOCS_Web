@@ -1,0 +1,18 @@
+<form [formGroup]="uploadFileForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="file">Requirements file</label>
+    <input type="file" id="file" (change)="onFileChange($event)" #fileInput formControlName="file">
+    <!-- <button type="button" class="btn btn-sm btn-default" (click)="clearFile()">clear file</button> -->
+  </div>
+  <button type="submit" class="btn btn-success">Process file</button>
+</form>
+
+<div *ngIf="requirements">
+   <h3>Requirements</h3>
+  <ul>
+    <li *ngFor="let req of requirements">
+      {{req}}
+    </li>
+  </ul>
+  
+</div>
