@@ -10,7 +10,8 @@ export class UploadFileComponent implements OnInit {
   
   uploadFileForm;
   requirements;
-  private contentFile;
+  contentFile;
+  filename;
 
   constructor() {
     this.uploadFileForm= new FormGroup({
@@ -32,6 +33,7 @@ export class UploadFileComponent implements OnInit {
     let reader = new FileReader();
     if(event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
+      this.filename = file.name;
       reader.readAsText(file);
       reader.onloadend = (e) => {
         //console.log(reader.contentFile);
@@ -42,6 +44,7 @@ export class UploadFileComponent implements OnInit {
   }
 
   clearFile() {
+    this.filename = "";
     this.contentFile = "";
     this.requirements = ""; 
     this.uploadFileForm.reset();
