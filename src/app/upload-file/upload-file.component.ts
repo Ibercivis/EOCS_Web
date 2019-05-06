@@ -24,8 +24,9 @@ export class UploadFileComponent implements OnInit {
   }
 
   onSubmit() {
-    // TODO: Use EventEmitter with form value
-    this.requirements = this.contentFile;
+    this.requirements = this.contentFile.filter(function (el) {
+      return el != null && el.length > 1;
+    });
     console.log(this.requirements);
   }
 
@@ -36,7 +37,6 @@ export class UploadFileComponent implements OnInit {
       this.filename = file.name;
       reader.readAsText(file);
       reader.onloadend = (e) => {
-        //console.log(reader.contentFile);
         this.contentFile = reader.result;
         this.contentFile = this.contentFile.split(/\n/);
      };
