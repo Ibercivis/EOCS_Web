@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Requirement } from '../Requirement';
+import { RequirementsService } from '../requirements.service';
 
 @Component({
   selector: 'app-requirements',
@@ -9,23 +9,16 @@ import { Observable } from 'rxjs';
 })
 export class RequirementsComponent implements OnInit {
 
-  requirements = [];
+  requirements:Requirement[] = [];
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private requirementService : RequirementsService) { }
 
   ngOnInit() {
-    this.obtenerRequerimientos();
+    this.getRequirements();
   }
 
-  obtenerRequerimientos() {
-    
-      this.obtenerRequerimientosObs().subscribe(apiData => (this.requirements = apiData));
+  getRequirements() {
+    this.requirementService.getRequirements().subscribe(apiData => (this.requirements = apiData));
   }
-
-  //service
-  obtenerRequerimientosObs(): Observable<any> {
-    const url = 'http://193.146.116.148:3000/requirements';
-    return this.httpClient.get(url);
-  }
-
+  
 }
