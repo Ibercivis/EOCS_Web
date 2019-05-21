@@ -18,7 +18,7 @@
       <div class="input-group">
         <div class="input-group-addon"><i class="fa fa-search"></i></div>
         <input type="text" class="form-control" placeholder="Search a requirement" 
-          id="searchRequirement" formControlName="searchRequirement">
+          id="searchRequirement" formControlName="searchRequirement" >
       </div>      
     </div>
   </form>
@@ -40,7 +40,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let req of ( requirements | filter:searchRequirement | orderBy:sortType:sortReverse ); 
+      <tr *ngFor="let req of ( filteredOptions | orderBy:sortType:sortReverse ); 
                   let i = index" [attr.data-index]="i + 1">
         <th scope="row">{{i+1}}</th>
         <td>{{req.text}}</td>
