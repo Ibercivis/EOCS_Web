@@ -1,19 +1,50 @@
 
 <div *ngIf="requirements" class="container" style="margin:auto">
+
+  <h4>Project: </h4>
+  <div [formGroup]="selectProjectForm">
+    <select id="selectedAccount" formControlName="selectedAccount" (change)="accountChange($event.target.value)">
+      <option *ngFor="let acc of accounts" [ngValue]="acc.account_name">{{acc.account_name}}</option>
+    </select>
+  </div>
+
+  <p></p>
+  
+
   <h3>Requirements</h3>
+
+  <form [formGroup]="searchRequirementForm">
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" class="form-control" placeholder="Search a requirement" 
+          id="searchRequirement" formControlName="searchRequirement">
+      </div>      
+    </div>
+  </form>
 
   <table class="table table-striped table-bordered table-hover">
     <thead class="thead-dark">
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Requirement</th>
+        <th scope="col" (click)="sortType = 'text'; sortReverse = !sortReverse"
+        [class.active]="sortType === 'text'">Requirement
+          <span [hidden]="sortType == 'text' && sortReverse || sortType !='text'" >▼</span>
+          <span [hidden]="sortType == 'text' && !sortReverse || sortType !='text'">▲</span>
+        </th>
+        <th scope="col" (click)="sortType = 'tweet_class'; sortReverse = !sortReverse">Class
+        <span [hidden]="sortType == 'tweet_class' && sortReverse || sortType !='tweet_class'" >▼</span>
+        <span [hidden]="sortType == 'tweet_class' && !sortReverse || sortType !='tweet_class'">▲</span>
+        </th>
         <th scope="col">From</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let req of requirements; let i = index" [attr.data-index]="i + 1">
-        <th scope="row">{{req.id}}</th>
-        <td>{{req.message}}</td>
+      <tr *ngFor="let req of ( requirements | filter:searchRequirement | orderBy:sortType:sortReverse ); 
+                  let i = index" [attr.data-index]="i + 1">
+        <th scope="row">{{i+1}}</th>
+        <td>{{req.text}}</td>
+        <td>{{req.tweet_class}}</td>
         <td>Twitter</td>
       </tr>
     </tbody>

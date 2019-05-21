@@ -10,19 +10,22 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UploadFileComponent } from './upload-file/upload-file.component';
 import { RequirementsComponent } from './requirements/requirements.component';
-
+import { OrderModule } from 'ngx-order-pipe';
+import { FilterPipe } from './filter.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     UploadFileComponent,
-    RequirementsComponent
+    RequirementsComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     NgbModule,
     MatProgressSpinnerModule,
+    OrderModule,
     HttpClientModule,
     AppRoutingModule
   ],
