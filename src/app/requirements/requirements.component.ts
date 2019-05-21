@@ -48,6 +48,7 @@ export class RequirementsComponent implements OnInit {
   }
 
   accountChange(value){
+    this.searchRequirementForm.controls['searchRequirement'].setValue(null, {onlySelf: true});
     var account = value.substring(value.indexOf(' ')+ 1,value.length);
     console.log(account);
     this.getRequirementsByProject(account);
