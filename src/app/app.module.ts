@@ -11,14 +11,12 @@ import { AppComponent } from './app.component';
 import { UploadFileComponent } from './upload-file/upload-file.component';
 import { RequirementsComponent } from './requirements/requirements.component';
 import { OrderModule } from 'ngx-order-pipe';
-import { FilterPipe } from './filter.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     UploadFileComponent,
-    RequirementsComponent,
-    FilterPipe
+    RequirementsComponent
   ],
   imports: [
     BrowserModule,

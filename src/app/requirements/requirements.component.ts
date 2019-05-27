@@ -62,6 +62,9 @@ export class RequirementsComponent implements OnInit {
   }
 
   filterRequirements(){
+     if(this.searchRequirementForm.controls['searchRequirement'].value == null){
+      this.searchRequirementForm.controls['searchRequirement'].value = '';
+     }
     this.filteredOptions = this.requirements.filter(requirement =>
       requirement.text.toLowerCase().indexOf(this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
   }
