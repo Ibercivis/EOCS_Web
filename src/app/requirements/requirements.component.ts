@@ -68,5 +68,27 @@ export class RequirementsComponent implements OnInit {
     this.filteredOptions = this.requirements.filter(requirement =>
       requirement.text.toLowerCase().indexOf(this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
   }
+
+  editRequirement(req) {
+    alert('Not implemented yet');
+    console.log('Edit requirement: ' + req);
+  }
+
+  deleteRequirement(req) {
+    console.log('Delete requirement: ' + req);
+    this.requirementService.deleteRequirement(req)
+      .subscribe(data => {
+        let index = 0;
+        for(let obj of this.filteredOptions){
+          if(obj['status_id'] == req){
+            console.log("Deleting " + obj['status_id']);
+            this.filteredOptions.splice(index, 1);
+          }
+          index++;
+        }
+       }, error => {
+        console.log('error');
+    });
+  }
   
 }
