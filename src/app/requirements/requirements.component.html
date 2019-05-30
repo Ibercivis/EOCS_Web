@@ -46,8 +46,8 @@
         <td>{{req.tweet_class}}</td>
         <td>Twitter</td>
         <td align="center">
-          <span (click)="editRequirement(req.status_id)"><i class="fas fa-edit"></i></span>
-          <span (click)="deleteRequirement(req.status_id)"><i style="margin-left:1em" class="fas fa-trash-alt"></i></span>
+          <span (click)="editRequirement(req.status_id)" style="cursor: pointer;"><i class="fas fa-edit"></i></span>
+          <span (click)="deleteRequirement(req.status_id)"><i style="cursor: pointer;margin-left:1em" class="fas fa-trash-alt"></i></span>
         </td>
       </tr>
     </tbody>
