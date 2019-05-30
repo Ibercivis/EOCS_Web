@@ -42,7 +42,7 @@
       <tr *ngFor="let req of ( filteredOptions | orderBy:sortType:sortReverse ); 
                   let i = index" [attr.data-index]="i + 1">
         <th scope="row">{{i+1}}</th>
-        <td>{{req.text}}</td>
+        <td style="width: 70%;">{{req.text}}</td>
         <td>{{req.tweet_class}}</td>
         <td>Twitter</td>
         <td align="center">
