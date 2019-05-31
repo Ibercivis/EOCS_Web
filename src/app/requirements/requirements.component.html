@@ -1,5 +1,5 @@
 
-<div *ngIf="requirements" class="container" style="margin:auto">
+<div *ngIf="requirements else nodata" class="container" style="margin:auto">
 
   <h4>Project: </h4>
   <div [formGroup]="selectProjectForm">
@@ -56,3 +56,6 @@
 </div>
 
 
+<ng-template #nodata>
+  <p align="center">There is no data.</p>
+</ng-template>

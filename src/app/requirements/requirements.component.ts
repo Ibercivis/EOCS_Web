@@ -10,7 +10,7 @@ import { RequirementsService } from '../requirements.service';
 })
 export class RequirementsComponent implements OnInit {
 
-  requirements:Requirement[] = [];
+  requirements:Requirement[];
   filteredOptions: Requirement[] = [];
   searchRequirementForm;
   selectProjectForm;
