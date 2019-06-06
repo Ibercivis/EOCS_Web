@@ -1,0 +1,16 @@
+<div class="container">
+  <form [formGroup]="form" (ngSubmit)="createProject()">
+    <p>
+      <label>Project's name: </label>
+      <input type="text" class="form-control" placeHolder="Project's name" name="name" id="name" formControlName="name">
+    </p>
+    <p>
+      <label>Twitter account: </label>
+      <input type="text" class="form-control" placeHolder="Twitter account" name="twitter_account" id="twitter_account"
+        formControlName="twitter_account">
+    </p>
+
+    <input class="btn btn-primary" type="submit" value="Create" />
+    <input class="btn btn-primary" style="margin-left:1em" type="button" value="Go back" routerLink="" />
+  </form>
+</div>

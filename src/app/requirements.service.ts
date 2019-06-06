@@ -23,6 +23,12 @@ export class RequirementsService {
     return this.httpClient.get(url);
   }
 
+  addObserveAccount(account): Observable<any> {
+    const url = "http://193.146.116.148:9703/hitec/orchestration/twitter/observe/tweet/account/"
+     + account +"/interval/hourly/lang/en"
+     return this.httpClient.post(url, null);
+  }
+
   getProjects(): Observable<any> {
     const url = this.baseURL + '/projects';
     return this.httpClient.get(url);
