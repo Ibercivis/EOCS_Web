@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { RequirementsService } from '../requirements.service';
+import { InsertRequirementComponent } from '../insert-requirement/insert-requirement.component';
 
 @Component({
   selector: 'app-upload-file',
@@ -13,7 +15,7 @@ export class UploadFileComponent implements OnInit {
   contentFile;
   filename;
 
-  constructor() {
+  constructor(private requirementService : RequirementsService,  private parent: InsertRequirementComponent) {
     this.uploadFileForm= new FormGroup({
       file: new FormControl('')
     });
@@ -28,6 +30,11 @@ export class UploadFileComponent implements OnInit {
       return el != null && el.length > 1;
     });
     console.log(this.requirements);
+
+    for(let req of this.requirements){
+      this.requirementService.insertRequirement(this.parent.account, req).subscribe(
+        data => console.log("Added"), err => console.log("Error "+err));
+    }
   }
 
   onFileChange(event) {

@@ -29,6 +29,26 @@ export class RequirementsService {
      return this.httpClient.post(url, null);
   }
 
+  insertRequirement(account, text): Observable<any> {
+    const url = "http://193.146.116.148:9682/hitec/repository/twitter/store/tweet/"
+    var body = [
+      {
+        "sentiment": "",
+        "sentiment_score": 0,
+        "status_id": ""+(Math.floor(Math.random() * (999999 - 100000)) + 100000),
+        "in_reply_to_screen_name": ""+account,
+        "tweet_class": "",
+        "user_name": "FILE",
+        "created_at": 20190601,
+        "favorite_count": 0,
+        "text": text,
+        "lang": "en",
+        "retweet_count": 0
+      }
+    ];
+    return this.httpClient.post(url, JSON.stringify(body));
+  }
+
   getProjects(): Observable<any> {
     const url = this.baseURL + '/projects';
     return this.httpClient.get(url);

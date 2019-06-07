@@ -1,0 +1,36 @@
+<div align="center">
+  <button class="btn btn-primary" routerLink="">Go back to requirements page</button>
+  <p></p>
+  <br />
+</div>
+
+<div class="container">
+  <div class="mainbox col-md-7" style="margin:auto">
+    <h4>Project: </h4>
+    <div [formGroup]="selectProjectForm">
+      <select id="selectedAccount" formControlName="selectedAccount" (change)="accountChange($event.target.value)">
+        <option *ngFor="let acc of accounts" [ngValue]="acc.account_name">{{acc.account_name}}</option>
+      </select>
+    </div>
+
+    <p></p>
+  </div>
+</div>
+
+<br/>
+
+<app-upload-file></app-upload-file>
+
+<div class="container">
+  <div class="mainbox col-md-7" style="margin:auto">
+    <h4>Or insert a requirement</h4>
+    <form [formGroup]="form" (ngSubmit)="insertRequirement()">
+      <p>
+        <label>Requirement: </label>
+        <input type="text" placeholder="Text requirement" class="form-control" name="new_requirement"
+          id="new_requirement" formControlName="new_requirement">
+      </p>
+      <input class="btn btn-primary" type="submit" value="Insert" />
+    </form>
+  </div>
+</div>

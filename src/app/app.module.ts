@@ -12,13 +12,15 @@ import { UploadFileComponent } from './upload-file/upload-file.component';
 import { RequirementsComponent } from './requirements/requirements.component';
 import { OrderModule } from 'ngx-order-pipe';
 import { NewProjectComponent } from './new-project/new-project.component';
+import { InsertRequirementComponent } from './insert-requirement/insert-requirement.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     UploadFileComponent,
     RequirementsComponent,
-    NewProjectComponent
+    NewProjectComponent,
+    InsertRequirementComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,6 @@
 <div class="container">
+  <h4 class="mainbox col-md-7" style="margin:auto">Upload txt file with requirements</h4>
+  <p></p>
 
   <form [formGroup]="uploadFileForm" (ngSubmit)="onSubmit()" class="mainbox col-md-7" style="margin:auto">
 
@@ -20,9 +22,14 @@
       </div>
     </div>
     <button *ngIf="contentFile" type="submit" class="btn btn-success">Process file</button>
+    <div *ngIf="requirements" style="margin:auto">
+      <h5>File proccessed</h5>
+      </div>
   </form>
 
   <br /><br />
+
+  <!--
   <div *ngIf="requirements" class="container" style="margin:auto">
     <h3>Requirements</h3>
 
@@ -44,6 +51,8 @@
     </table>
 
   </div>
+-->
+
 
 
 </div>
