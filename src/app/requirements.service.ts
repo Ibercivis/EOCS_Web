@@ -19,7 +19,7 @@ export class RequirementsService {
   }
 
   getRequirementsByProject(project): Observable<any> {
-    const url = this.baseURL + '/requirements?project='+ project;
+    const url = 'http://193.146.116.148:9682/hitec/repository/twitter/account_name/' + project + '/all' ;
     return this.httpClient.get(url);
   }
 
@@ -50,7 +50,7 @@ export class RequirementsService {
   }
 
   getProjects(): Observable<any> {
-    const url = this.baseURL + '/projects';
+    const url = 'http://193.146.116.148:9682/hitec/repository/twitter/observables';
     return this.httpClient.get(url);
   }
 
@@ -58,7 +58,7 @@ export class RequirementsService {
     const url = this.baseURL + '/requirement?requirement=' + requirement;
     return this.httpClient.delete(url).pipe(
       catchError(this.handleError('deleteRequirement'))
-    );;
+    );
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

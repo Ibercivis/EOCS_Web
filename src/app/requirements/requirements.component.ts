@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup,FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Requirement } from '../Requirement';
 import { RequirementsService } from '../requirements.service';
 
@@ -10,7 +10,7 @@ import { RequirementsService } from '../requirements.service';
 })
 export class RequirementsComponent implements OnInit {
 
-  requirements:Requirement[];
+  requirements: Requirement[];
   filteredOptions: Requirement[] = [];
   searchRequirementForm;
   selectProjectForm;
@@ -18,38 +18,42 @@ export class RequirementsComponent implements OnInit {
   sortReverse = false;
   accounts;
   selectedAccount;
-  defaultAccount = 'ibercivis';
-  
 
-  constructor(private requirementService : RequirementsService) {
-    this.selectProjectForm= new FormGroup({
+
+  constructor(private requirementService: RequirementsService) {
+    this.selectProjectForm = new FormGroup({
       selectedAccount: new FormControl('')
     });
-    this.searchRequirementForm= new FormGroup({
+    this.searchRequirementForm = new FormGroup({
       searchRequirement: new FormControl('')
     });
-    this.selectProjectForm.controls['selectedAccount'].setValue(this.defaultAccount, {onlySelf: true});
   }
 
   ngOnInit() {
     this.getProjects();
-    this.getRequirementsByProject(this.defaultAccount);
     this.searchRequirementForm.controls['searchRequirement'].valueChanges
-    .subscribe(
-      value => {
-      console.log('Filter value changed:' + value);
-      this.filterRequirements();
+      .subscribe(
+        value => {
+          console.log('Filter value changed:' + value);
+          this.filterRequirements();
+        }
+      );
+  }
+
+  getProjects() {
+    this.requirementService.getProjects().subscribe(apiData => {
+      this.accounts = apiData;
+      if(this.accounts !== null && this.accounts.length > 0){
+        var account_name = this.accounts[0].account_name;
+        this.getRequirementsByProject(account_name);
+        this.selectProjectForm.controls['selectedAccount'].setValue(account_name, { onlySelf: true });
       }
-    );    
+    });
   }
 
-  getProjects(){
-    this.requirementService.getProjects().subscribe(apiData => (this.accounts = apiData));
-  }
-
-  accountChange(value){
-    this.searchRequirementForm.controls['searchRequirement'].setValue(null, {onlySelf: true});
-    var account = value.substring(value.indexOf(' ')+ 1,value.length);
+  accountChange(value) {
+    this.searchRequirementForm.controls['searchRequirement'].setValue(null, { onlySelf: true });
+    var account = value.substring(value.indexOf(' ') + 1, value.length);
     console.log(account);
     this.getRequirementsByProject(account);
   }
@@ -61,10 +65,10 @@ export class RequirementsComponent implements OnInit {
     this.requirementService.getRequirementsByProject(project).subscribe(apiData => (this.filteredOptions = this.requirements = apiData));
   }
 
-  filterRequirements(){
-     if(this.searchRequirementForm.controls['searchRequirement'].value == null){
+  filterRequirements() {
+    if (this.searchRequirementForm.controls['searchRequirement'].value == null) {
       this.searchRequirementForm.controls['searchRequirement'].value = '';
-     }
+    }
     this.filteredOptions = this.requirements.filter(requirement =>
       requirement.text.toLowerCase().indexOf(this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
   }
@@ -79,16 +83,16 @@ export class RequirementsComponent implements OnInit {
     this.requirementService.deleteRequirement(req)
       .subscribe(data => {
         let index = 0;
-        for(let obj of this.filteredOptions){
-          if(obj['status_id'] == req){
+        for (let obj of this.filteredOptions) {
+          if (obj['status_id'] == req) {
             console.log("Deleting " + obj['status_id']);
             this.filteredOptions.splice(index, 1);
           }
           index++;
         }
-       }, error => {
+      }, error => {
         console.log('error');
-    });
+      });
   }
-  
+
 }
