@@ -12,7 +12,6 @@ export class InsertRequirementComponent implements OnInit {
   form: FormGroup;
   account = "";
   selectProjectForm;
-  defaultAccount = "Ibercivis";
   accounts;
 
   constructor(private requirementService : RequirementsService) {
@@ -22,12 +21,10 @@ export class InsertRequirementComponent implements OnInit {
     this.form= new FormGroup({
       new_requirement: new FormControl('')
     });
-    this.selectProjectForm.controls['selectedAccount'].setValue(this.defaultAccount, {onlySelf: true});
    }
 
   ngOnInit() {
     this.getProjects();
-    this.account = this.defaultAccount;
   }
 
   insertRequirement(){
@@ -41,7 +38,13 @@ export class InsertRequirementComponent implements OnInit {
   }
 
   getProjects(){
-    this.requirementService.getProjects().subscribe(apiData => (this.accounts = apiData));
+    this.requirementService.getProjects().subscribe(apiData => {
+      this.accounts = apiData;
+      if(this.accounts !== null && this.accounts.length > 0){
+        var account_name = this.accounts[0].account_name;
+        this.selectProjectForm.controls['selectedAccount'].setValue(account_name, { onlySelf: true });
+      }
+    });
   }
 
 }
