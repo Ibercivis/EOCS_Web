@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup,FormControl } from '@angular/forms';
 import { RequirementsService } from '../requirements.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -12,7 +13,7 @@ export class NewProjectComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private requirementService : RequirementsService) {
+  constructor(private requirementService : RequirementsService, private router: Router) {
     this.form= new FormGroup({
       name: new FormControl(''),
       twitter_account: new FormControl('')
@@ -28,6 +29,7 @@ export class NewProjectComponent implements OnInit {
         console.log(data);
         if(data.message){
           console.log("Added");
+          this.router.navigateByUrl('');
         }
       },
       error => {

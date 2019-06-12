@@ -34,7 +34,6 @@ export class RequirementsComponent implements OnInit {
     this.searchRequirementForm.controls['searchRequirement'].valueChanges
       .subscribe(
         value => {
-          console.log('Filter value changed:' + value);
           this.filterRequirements();
         }
       );
@@ -43,7 +42,7 @@ export class RequirementsComponent implements OnInit {
   getProjects() {
     this.requirementService.getProjects().subscribe(apiData => {
       this.accounts = apiData;
-      if(this.accounts !== null && this.accounts.length > 0){
+      if (this.accounts !== null && this.accounts.length > 0) {
         var account_name = this.accounts[0].account_name;
         this.getRequirementsByProject(account_name);
         this.selectProjectForm.controls['selectedAccount'].setValue(account_name, { onlySelf: true });
@@ -69,13 +68,11 @@ export class RequirementsComponent implements OnInit {
     if (this.searchRequirementForm.controls['searchRequirement'].value == null) {
       this.searchRequirementForm.controls['searchRequirement'].value = '';
     }
-    this.filteredOptions = this.requirements.filter(requirement =>
-      requirement.text.toLowerCase().indexOf(this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
-  }
-
-  editRequirement(req) {
-    alert('Not implemented yet');
-    console.log('Edit requirement: ' + req);
+    if(this.requirements != null){
+      this.filteredOptions = this.requirements.filter(requirement =>
+        requirement.text.toLowerCase().indexOf(this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
+    }
+    
   }
 
   deleteRequirement(req) {
@@ -94,5 +91,4 @@ export class RequirementsComponent implements OnInit {
         console.log('error');
       });
   }
-
 }
