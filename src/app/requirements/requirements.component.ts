@@ -17,7 +17,6 @@ export class RequirementsComponent implements OnInit {
   sortType = 'text';
   sortReverse = false;
   accounts;
-  selectedAccount;
 
 
   constructor(private requirementService: RequirementsService) {
@@ -84,11 +83,24 @@ export class RequirementsComponent implements OnInit {
           if (obj['status_id'] == req) {
             console.log("Deleting " + obj['status_id']);
             this.filteredOptions.splice(index, 1);
+            break;
           }
           index++;
         }
       }, error => {
-        console.log('error');
+        console.log('Error deleting requirement');
+      });
+  }
+
+  deleteProject(){
+    let selectedAccount = this.selectProjectForm.controls['selectedAccount'].value;
+    console.log('Delete project: ' + selectedAccount);
+    this.requirementService.deleteProject(selectedAccount)
+      .subscribe(data => {
+        alert('Project account deleted');
+        this.getProjects();
+      }, error => {
+        console.log('Error deleting project');
       });
   }
 }

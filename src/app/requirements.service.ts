@@ -61,6 +61,13 @@ export class RequirementsService {
     );
   }
 
+  deleteProject(account){
+    const url = 'http://193.146.116.148:9703/hitec/orchestration/twitter/observe/account/' + account;
+    return this.httpClient.delete(url).pipe(
+      catchError(this.handleError('deleteProject'))
+    );
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
