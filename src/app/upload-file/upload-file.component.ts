@@ -9,17 +9,17 @@ import { InsertRequirementComponent } from '../insert-requirement/insert-require
   styleUrls: ['./upload-file.component.css']
 })
 export class UploadFileComponent implements OnInit {
-  
+
   uploadFileForm;
   requirements;
   contentFile;
   filename;
 
-  constructor(private requirementService : RequirementsService,  private parent: InsertRequirementComponent) {
-    this.uploadFileForm= new FormGroup({
+  constructor(private requirementService: RequirementsService, private parent: InsertRequirementComponent) {
+    this.uploadFileForm = new FormGroup({
       file: new FormControl('')
     });
-   }
+  }
 
   ngOnInit() {
 
@@ -31,30 +31,30 @@ export class UploadFileComponent implements OnInit {
     });
     console.log(this.requirements);
 
-    for(let req of this.requirements){
+    for (let req of this.requirements) {
       console.log("Account:" + this.parent.account);
       this.requirementService.insertRequirement(this.parent.account, req).subscribe(
-        data => console.log("Added"), err => console.log("Error "+err));
+        data => console.log("Added"), err => console.log("Error " + err));
     }
   }
 
   onFileChange(event) {
     let reader = new FileReader();
-    if(event.target.files && event.target.files.length > 0) {
+    if (event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
       this.filename = file.name;
       reader.readAsText(file);
       reader.onloadend = (e) => {
         this.contentFile = reader.result;
         this.contentFile = this.contentFile.split(/\n/);
-     };
+      };
     }
   }
 
   clearFile() {
     this.filename = "";
     this.contentFile = "";
-    this.requirements = ""; 
+    this.requirements = "";
     this.uploadFileForm.reset();
   }
 

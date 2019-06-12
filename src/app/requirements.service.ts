@@ -18,7 +18,8 @@ export class RequirementsService {
   }
 
   getRequirementsByProject(project): Observable<any> {
-    const url = environment.microservices_url + ':9682/hitec/repository/twitter/account_name/' + project + '/all';
+    const url = environment.microservices_url + ':9682/hitec/repository/twitter/account_name/' 
+      + project + '/all';
     return this.httpClient.get(url);
   }
 
@@ -49,14 +50,15 @@ export class RequirementsService {
   }
 
   deleteRequirement(requirement): Observable<any> {
-    const url = environment.mongo_url + '/requirement?requirement=' + requirement;
+    const url = environment.backend_url + '/requirement?requirement=' + requirement;
     return this.httpClient.delete(url).pipe(
       catchError(this.handleError('deleteRequirement'))
     );
   }
 
   deleteProject(account) {
-    const url = environment.microservices_url + ':9703/hitec/orchestration/twitter/observe/account/' + account;
+    const url = environment.microservices_url + ':9703/hitec/orchestration/twitter/observe/account/'
+      + account;
     return this.httpClient.delete(url).pipe(
       catchError(this.handleError('deleteProject'))
     );

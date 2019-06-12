@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  mongo_url: 'http://193.146.116.148:3000',
+  backend_url: 'http://193.146.116.148:3000',
   microservices_url: 'http://193.146.116.148'
 };
 

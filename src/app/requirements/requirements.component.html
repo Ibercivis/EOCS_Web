@@ -6,8 +6,8 @@
     <select id="selectedAccount" formControlName="selectedAccount" (change)="accountChange($event.target.value)">
       <option *ngFor="let acc of accounts" [ngValue]="acc.account_name">{{acc.account_name}}</option>
     </select>
-    <button class="btn btn-primary" routerLink="/new_project" style="margin-left:1em">New project</button>
-    <button class="btn btn-primary" (click)="deleteProject()" style="margin-left:1em">Delete project</button>
+    <button class="btn btn-dark" routerLink="/new_project" style="margin-left:1em">New project</button>
+    <button class="btn btn-dark" (click)="deleteProject()" style="margin-left:1em">Delete project</button>
   </div>
   
   <p></p>
@@ -16,7 +16,7 @@
   <h3>Requirements</h3>
 
   <div align="center">
-    <button  class="btn btn-primary" routerLink="/insert">Insert requirements</button>
+    <button  class="btn btn-dark" routerLink="/insert">Insert requirements</button>
     <p></p>
   </div>
 

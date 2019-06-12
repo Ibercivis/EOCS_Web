@@ -64,11 +64,11 @@ export class RequirementsComponent implements OnInit {
     if (this.searchRequirementForm.controls['searchRequirement'].value == null) {
       this.searchRequirementForm.controls['searchRequirement'].value = '';
     }
-    if(this.requirements != null){
+    if (this.requirements != null) {
       this.filteredOptions = this.requirements.filter(requirement =>
         requirement.text.toLowerCase().indexOf(this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
     }
-    
+
   }
 
   deleteRequirement(req) {
@@ -89,7 +89,7 @@ export class RequirementsComponent implements OnInit {
       });
   }
 
-  deleteProject(){
+  deleteProject() {
     let selectedAccount = this.selectProjectForm.controls['selectedAccount'].value;
     console.log('Delete project: ' + selectedAccount);
     this.requirementService.deleteProject(selectedAccount)
