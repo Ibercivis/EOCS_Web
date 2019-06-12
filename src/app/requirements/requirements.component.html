@@ -54,7 +54,7 @@
         <th scope="row">{{i+1}}</th>
         <td style="width: 70%;">{{req.text}}</td>
         <td>{{req.tweet_class}}</td>
-        <td>Twitter</td>
+        <td>{{req.user_name == 'FILE' ? 'File' : 'Twitter'}}</td>
         <td align="center">
           <span (click)="deleteRequirement(req.status_id)"><i style="cursor: pointer;" class="fas fa-trash-alt"></i></span>
         </td>

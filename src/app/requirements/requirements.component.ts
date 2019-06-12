@@ -56,9 +56,6 @@ export class RequirementsComponent implements OnInit {
     this.getRequirementsByProject(account);
   }
 
-  getRequirements() {
-    this.requirementService.getRequirements().subscribe(apiData => (this.requirements = apiData));
-  }
   getRequirementsByProject(project) {
     this.requirementService.getRequirementsByProject(project).subscribe(apiData => (this.filteredOptions = this.requirements = apiData));
   }

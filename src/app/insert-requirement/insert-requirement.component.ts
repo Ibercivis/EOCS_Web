@@ -43,6 +43,7 @@ export class InsertRequirementComponent implements OnInit {
       if(this.accounts !== null && this.accounts.length > 0){
         var account_name = this.accounts[0].account_name;
         this.selectProjectForm.controls['selectedAccount'].setValue(account_name, { onlySelf: true });
+        this.account = account_name;
       }
     });
   }

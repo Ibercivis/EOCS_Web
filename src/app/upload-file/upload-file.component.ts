@@ -32,6 +32,7 @@ export class UploadFileComponent implements OnInit {
     console.log(this.requirements);
 
     for(let req of this.requirements){
+      console.log("Account:" + this.parent.account);
       this.requirementService.insertRequirement(this.parent.account, req).subscribe(
         data => console.log("Added"), err => console.log("Error "+err));
     }
