@@ -18,7 +18,6 @@ export class RequirementsComponent implements OnInit {
   sortReverse = false;
   accounts;
 
-
   constructor(private requirementService: RequirementsService) {
     this.selectProjectForm = new FormGroup({
       selectedAccount: new FormControl('')
@@ -57,7 +56,8 @@ export class RequirementsComponent implements OnInit {
   }
 
   getRequirementsByProject(project) {
-    this.requirementService.getRequirementsByProject(project).subscribe(apiData => (this.filteredOptions = this.requirements = apiData));
+    this.requirementService.getRequirementsByProject(project).subscribe(
+      apiData => (this.filteredOptions = this.requirements = apiData));
   }
 
   filterRequirements() {
@@ -66,9 +66,9 @@ export class RequirementsComponent implements OnInit {
     }
     if (this.requirements != null) {
       this.filteredOptions = this.requirements.filter(requirement =>
-        requirement.text.toLowerCase().indexOf(this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
+        requirement.text.toLowerCase().indexOf(
+          this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
     }
-
   }
 
   deleteRequirement(req) {

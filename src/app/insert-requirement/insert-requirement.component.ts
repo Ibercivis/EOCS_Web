@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup,FormControl } from '@angular/forms';
 import { RequirementsService } from '../requirements.service';
+import { ReqClass } from '../req-class.enum';
 
 @Component({
   selector: 'app-insert-requirement',
@@ -10,17 +11,21 @@ import { RequirementsService } from '../requirements.service';
 export class InsertRequirementComponent implements OnInit {
 
   form: FormGroup;
+  from = "MANUAL";
   account = "";
   selectProjectForm;
   accounts;
+  reqClass;
 
   constructor(private requirementService : RequirementsService) {
     this.selectProjectForm= new FormGroup({
       selectedAccount: new FormControl('')
     });
     this.form= new FormGroup({
-      new_requirement: new FormControl('')
+      new_requirement: new FormControl(''),
+      selectedClass: new FormControl('')
     });
+    this.reqClass = Object.values(ReqClass).filter(value => typeof value !== 'number');
    }
 
   ngOnInit() {
@@ -28,8 +33,13 @@ export class InsertRequirementComponent implements OnInit {
   }
 
   insertRequirement(){
-    this.requirementService.insertRequirement(this.account, this.form.value.new_requirement).subscribe(
-      data => console.log("Added"), err => console.log("Error "+err));
+    this.requirementService.insertRequirement(this.account, 
+      this.form.value.new_requirement,this.form.value.selectedClass, this.from).subscribe(
+      data => {
+        console.log("Added");
+        this.form.controls['new_requirement'].setValue("");
+        alert('Requirement added');
+    }, err => console.log("Error "+err));
   }
 
   accountChange(value){

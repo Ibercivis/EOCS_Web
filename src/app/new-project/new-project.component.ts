@@ -36,7 +36,7 @@ export class NewProjectComponent implements OnInit {
         console.log(error);
         alert('No added');
       }
-      );
+    );
   }
 
 }

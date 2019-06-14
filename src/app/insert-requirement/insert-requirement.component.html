@@ -30,6 +30,12 @@
         <input type="text" placeholder="Text requirement" class="form-control" name="new_requirement"
           id="new_requirement" formControlName="new_requirement">
       </p>
+      <p>
+        <label>Class: </label>
+        <select id="selectedClass" formControlName="selectedClass" style="margin-left:1em">
+          <option *ngFor="let class of reqClass" [ngValue]="class">{{class}}</option>
+        </select>
+      </p>
       <input class="btn btn-dark" type="submit" value="Insert" />
     </form>
   </div>

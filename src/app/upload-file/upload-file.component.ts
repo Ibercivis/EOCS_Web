@@ -10,6 +10,7 @@ import { InsertRequirementComponent } from '../insert-requirement/insert-require
 })
 export class UploadFileComponent implements OnInit {
 
+  from = "FILE";
   uploadFileForm;
   requirements;
   contentFile;
@@ -21,9 +22,7 @@ export class UploadFileComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 
   onSubmit() {
     this.requirements = this.contentFile.filter(function (el) {
@@ -32,9 +31,12 @@ export class UploadFileComponent implements OnInit {
     console.log(this.requirements);
 
     for (let req of this.requirements) {
-      console.log("Account:" + this.parent.account);
-      this.requirementService.insertRequirement(this.parent.account, req).subscribe(
-        data => console.log("Added"), err => console.log("Error " + err));
+      console.log(req);
+      let requirement = req.split(",");
+      if(requirement.length > 1){
+        this.requirementService.insertRequirement(this.parent.account, requirement[0], requirement[1].trim(), this.from).subscribe(
+          data => console.log("Added"), err => console.log("Error " + err));
+      }
     }
   }
 
