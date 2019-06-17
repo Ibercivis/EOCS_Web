@@ -39,12 +39,19 @@
         [class.active]="sortType === 'text'">Requirement
           <span [hidden]="sortType == 'text' && sortReverse || sortType !='text'" >▼</span>
           <span [hidden]="sortType == 'text' && !sortReverse || sortType !='text'">▲</span>
+          <span [hidden]="sortType == 'text'">▲▼</span>
         </th>
         <th scope="col" (click)="sortType = 'tweet_class'; sortReverse = !sortReverse">Class
           <span [hidden]="sortType == 'tweet_class' && sortReverse || sortType !='tweet_class'" >▼</span>
           <span [hidden]="sortType == 'tweet_class' && !sortReverse || sortType !='tweet_class'">▲</span>
+          <span [hidden]="sortType == 'tweet_class'">▲▼</span>
         </th>
-        <th scope="col">From</th>
+        <th scope="col" (click)="sortType = 'from'; sortReverse = !sortReverse">From
+          <span [hidden]="sortType == 'from' && sortReverse || sortType !='from'" >▼</span>
+          <span [hidden]="sortType == 'from' && !sortReverse || sortType !='from'">▲</span>
+          <span [hidden]="sortType == 'from'">▲▼</span>
+        </th>
+
         <th scope="col">Action</th>
       </tr>
     </thead>
