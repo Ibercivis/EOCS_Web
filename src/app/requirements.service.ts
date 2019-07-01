@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ReqClass } from './req-class.enum';
+
 
 
 @Injectable({
@@ -70,11 +71,47 @@ export class RequirementsService {
     );
   }
 
+  deleteProjectRequirements(selectedAccount){
+    const url = environment.backend_url + '/requirements?account=' + selectedAccount;
+    return this.httpClient.delete(url).pipe(
+      catchError(this.handleError('deleteProjectRequirements'))
+    );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.log(error);
       return of(result as T);
     };
+  }
+
+  createProjectEdemocracy(project, requirements) : Observable<any> {
+    console.log(project);
+    let url = environment.microservices_url + ":9750/api/projects?";
+
+    let tickets = "";
+    let index = 0;
+    for (let req of requirements) {
+      let urlTicket ="tickets[" + index + "][url]=url";
+      let titletTicket = "&tickets[" + index + "][title]=" + req.text;
+      let idTicket = "&tickets[" + index + "][id]=" + index;
+      let externalIdTicket = "&tickets[" + index + "][external_id]=" + req.status_id.slice(-7);
+      let descriptionTicket = "&tickets[" + index + "][description]=" + req.text;
+      tickets += urlTicket + titletTicket + idTicket + externalIdTicket + descriptionTicket + "&";
+      index++;
+    }
+    url += tickets;
+
+    let body = new URLSearchParams();
+    body.set('title', project);
+   
+    //TODO create form with phase dates
+    body.set('phase_end', '2019-09-18T12:06:06.855Z');
+    body.set('phase_candidates', '2019-06-18T12:06:06.855Z');
+    body.set('id', '10');
+
+    url += body;
+    return this.httpClient.post(url, JSON.stringify(body));
   }
 
 }

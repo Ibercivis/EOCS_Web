@@ -95,9 +95,37 @@ export class RequirementsComponent implements OnInit {
     this.requirementService.deleteProject(selectedAccount)
       .subscribe(data => {
         alert('Project account deleted');
+        //Delete all Project's requirements
+        this.deleteAllRequirements(selectedAccount);
         this.getProjects();
       }, error => {
         console.log('Error deleting project');
       });
+  }
+
+  deleteAllRequirements(selectedAccount) {
+    console.log('Delete requirements from: ' + selectedAccount);
+    this.requirementService.deleteProjectRequirements(selectedAccount)
+      .subscribe(data => {
+        console.log('Success deleting project requirements');        
+      }, error => {
+        console.log('Error deleting project requirements');
+      });
+  }
+
+  createProjectEdemocracy(){
+    let project = this.selectProjectForm.controls['selectedAccount'].value;
+    this.requirementService.createProjectEdemocracy(project, this.requirements).subscribe(
+      data  => {
+        console.log(data);
+        if(data){
+          console.log("Added in edemocracy");
+          alert('Vote created');
+        }
+      },
+      error => {
+        alert('No vote created');
+      }
+    );
   }
 }
