@@ -92,11 +92,12 @@ export class RequirementsService {
     let tickets = "";
     let index = 0;
     for (let req of requirements) {
+      let text = req.text.replace('#',''); // 400 response with query string params if it has a # character
       let urlTicket ="tickets[" + index + "][url]=url";
-      let titletTicket = "&tickets[" + index + "][title]=" + req.text;
+      let titletTicket = "&tickets[" + index + "][title]=" + text;
       let idTicket = "&tickets[" + index + "][id]=" + index;
       let externalIdTicket = "&tickets[" + index + "][external_id]=" + req.status_id.slice(-7);
-      let descriptionTicket = "&tickets[" + index + "][description]=" + req.text;
+      let descriptionTicket = "&tickets[" + index + "][description]=" + text;
       tickets += urlTicket + titletTicket + idTicket + externalIdTicket + descriptionTicket + "&";
       index++;
     }
@@ -112,6 +113,16 @@ export class RequirementsService {
 
     url += body;
     return this.httpClient.post(url, JSON.stringify(body));
+  }
+
+  getProjectEdemocracy(idProject) : Observable<any> {
+    const url = environment.microservices_url + ':9750/api/projects/' + idProject;
+    return this.httpClient.get(url);
+  }
+
+  getProjectsEdemocracy() : Observable<any> {
+    const url = environment.microservices_url + ':9750/api/projects/';
+    return this.httpClient.get(url);
   }
 
 }

@@ -9,6 +9,10 @@
     <button class="btn btn-dark" routerLink="/new_project" style="margin-left:1em">New project</button>
     <button class="btn btn-dark" (click)="deleteProject()" style="margin-left:1em">Delete project</button>
     <button class="btn btn-warning" (click)="createProjectEdemocracy()" style="margin-left:1em">Create a vote</button>
+    <b style="margin-left:1em">{{phase}}</b>
+    <p *ngIf="hasDates()">
+      <b>Phase candidates at:</b> {{phase_candidates_at}} <b style="margin-left:1em">Phase end:</b> {{phase_end_at}}
+    </p>
   </div>
   
   <p></p>
