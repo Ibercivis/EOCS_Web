@@ -175,20 +175,4 @@ export class RequirementsComponent implements OnInit {
         console.log('Error deleting project requirements');
       });
   }
-
-  createProjectEdemocracy() {
-    let project = this.selectProjectForm.controls['selectedAccount'].value;
-    this.requirementService.createProjectEdemocracy(project, this.requirements).subscribe(
-      data => {
-        console.log(data);
-        if (data) {
-          console.log("Added in edemocracy");
-          alert('Vote created');
-        }
-      },
-      error => {
-        alert('No vote created');
-      }
-    );
-  }
 }

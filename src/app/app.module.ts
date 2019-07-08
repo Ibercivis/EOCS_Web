@@ -1,10 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
-
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,6 +11,7 @@ import { RequirementsComponent } from './requirements/requirements.component';
 import { OrderModule } from 'ngx-order-pipe';
 import { NewProjectComponent } from './new-project/new-project.component';
 import { InsertRequirementComponent } from './insert-requirement/insert-requirement.component';
+import { NewEdemocracyProjectComponent } from './new-edemocracy-project/new-edemocracy-project.component';
 
 @NgModule({
   declarations: [
@@ -20,13 +19,13 @@ import { InsertRequirementComponent } from './insert-requirement/insert-requirem
     UploadFileComponent,
     RequirementsComponent,
     NewProjectComponent,
-    InsertRequirementComponent
+    InsertRequirementComponent,
+    NewEdemocracyProjectComponent
   ],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     NgbModule,
-    MatProgressSpinnerModule,
     OrderModule,
     HttpClientModule,
     AppRoutingModule

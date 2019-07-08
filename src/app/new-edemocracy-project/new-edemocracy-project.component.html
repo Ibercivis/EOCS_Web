@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="mainbox col-md-7" style="margin:auto">
+
+    <form [formGroup]="form" (ngSubmit)="createProjectEdemocracy()">
+      
+      <div *ngIf="submitted">
+          <div *ngIf="f.candidatesDate.errors || f.endDate.errors">
+            <p>
+              <ngb-alert type="danger" [dismissible]="false">
+                <strong>Error!</strong> Introduce dates and with 'yyyy-mm-dd' format.
+              </ngb-alert>
+            </p>
+          </div>
+
+          <div *ngIf="candidatesGreaterEndDate">
+              <p>
+                <ngb-alert type="danger" [dismissible]="false">
+                  <strong>Error!</strong> Candidates date can not be greater than end date.
+                </ngb-alert>
+              </p>
+            </div>
+    
+          <div *ngIf="!requirements">
+              <p>
+                  <ngb-alert type="danger" [dismissible]="false">
+                    <strong>Error!</strong> There aren't tickets for this project.
+                  </ngb-alert>
+                </p>
+          </div>
+      </div>
+
+      <p>
+        <label>Project's name: </label>
+        <input type="text" class="form-control" name="name" id="name" formControlName="name" readonly>
+      </p>
+
+      <div>
+        <label>Date phase candidate at: </label>
+        <div class="input-group">
+          <input class="form-control" placeholder="yyyy-mm-dd" name="dp" formControlName="candidatesDate" ngbDatepicker
+            #dc="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar fa fa-calendar" (click)="dc.toggle()"
+              type="button"></button>
+          </div>
+        </div>
+      </div>
+      
+      <p></p>
+
+      <div>
+        <label>Date phase end: </label>
+        <div class="input-group">
+          <input class="form-control" placeholder="yyyy-mm-dd" name="dp" formControlName="endDate" ngbDatepicker
+            #de="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar fa fa-calendar" (click)="de.toggle()"
+              type="button"></button>
+          </div>
+        </div>
+      </div>
+
+      <p></p>
+      <br/>
+
+      <div align="center">
+        <input class="btn btn-dark" type="submit" value="Create voting" />
+        <input class="btn btn-dark" style="margin-left:1em" type="button" value="Go back" routerLink="" />
+      </div>
+    </form>
+  </div>
+</div>
