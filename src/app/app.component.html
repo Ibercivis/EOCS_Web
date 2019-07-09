@@ -1,22 +1,40 @@
-
-<div class="navbar-brand">
-    <div class="navbar-item">
-      <a href="http://www.ibercivis.es/" target=”_blank”>
-        <img src="assets/img/ibercivis_logo.jpg"  width="20%" height="20%">
-      </a>
-      <a href="https://openreq.eu/" target=”_blank”>
-        <img src="assets/img/OpenReq_logo.png"  width="20%" height="20%">
-      </a>
+<div class="container">
+  <nav class="navbar navbar-light bg-light justify-content-between">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <a href="" style="text-decoration: none;color: inherit;">
+          <!--  <i class="fas fa-home fa-2x"></i>-->
+          <img src="assets/img/ibercivis.png" width="15%" height="15%">
+        </a>
+        <span style="margin-left:1em">EOCS-web</span>
+      </div>
     </div>
+
+    <div class="form-inline">
+      <a href="login">Login</a>
+      <a href="register" style="margin-left:1em">Register</a>
+    </div>
+
+  </nav>
+
+  <!--   <div style="text-align:center">
+    <h1>
+      Welcome to {{ title }}!
+    </h1>
+  </div> -->
+
+  <br /><br />
+
+
+  <router-outlet></router-outlet>
+
+  <footer style="text-align:right">
+    <a href="https://openreq.eu/" target=”_blank”>
+      <img src="assets/img/OpenReq_logo.png" width="20%" height="20%">
+    </a>
+
+    <a href="http://www.ibercivis.es/" target=”_blank”>
+      <img src="assets/img/ibercivis_logo.jpg" width="20%" height="20%">
+    </a>
+  </footer>
 </div>
-
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-</div>
-
-<br/><br/>
-
-
-<router-outlet></router-outlet>

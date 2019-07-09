@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="mainbox col-md-7" style="margin:auto">
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="border border-light p-5"
+       style="border: 2px; border-radius: 25px; box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1)">
+        <h2>Login</h2>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" formControlName="username" class="form-control"
+            [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+          <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+            <div *ngIf="f.username.errors.required">Username is required</div>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <button class="btn btn-primary">Login</button>
+          <a [routerLink]="['']" class="btn btn-link">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>

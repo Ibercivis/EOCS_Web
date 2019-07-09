@@ -12,6 +12,8 @@ import { OrderModule } from 'ngx-order-pipe';
 import { NewProjectComponent } from './new-project/new-project.component';
 import { InsertRequirementComponent } from './insert-requirement/insert-requirement.component';
 import { NewEdemocracyProjectComponent } from './new-edemocracy-project/new-edemocracy-project.component';
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { NewEdemocracyProjectComponent } from './new-edemocracy-project/new-edem
     RequirementsComponent,
     NewProjectComponent,
     InsertRequirementComponent,
-    NewEdemocracyProjectComponent
+    NewEdemocracyProjectComponent,
+    RegisterComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
