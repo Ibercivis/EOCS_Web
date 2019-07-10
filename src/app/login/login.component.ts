@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { UsersService } from '../users.service';
+import { Router } from '@angular/router';
+import { StorageService } from '../storage.service';
+import { Session } from '../model/Session';
+
 
 @Component({
   selector: 'app-login',
@@ -11,8 +15,10 @@ export class LoginComponent implements OnInit {
 
   loginForm;
   submitted = false;
+  loginError = false;
+  msgError = "Username not found";
 
-  constructor(private usersService: UsersService) { 
+  constructor(private router: Router, private usersService: UsersService, private storageService: StorageService) { 
     this.loginForm= new FormGroup({
       username: new FormControl('', Validators.required)
     });
@@ -29,9 +35,19 @@ export class LoginComponent implements OnInit {
       console.log("It's invalid form");
       return;
     }
-    this.usersService.login(this.loginForm.controls['username'].value).subscribe(
+    let username = this.loginForm.controls['username'].value;
+    this.usersService.login(username).subscribe(
       data => {
         console.log(data);
+        this.storageService.setCurrentSession(new Session(data.token, data.id, username));
+        this.storageService.triggerEventSession.next(true);
+        this.router.navigateByUrl('');
+      }, error => {
+        if(error){
+          if(error.status == 400){
+            this.loginError = true;
+          }
+        }
       }
     );
   }

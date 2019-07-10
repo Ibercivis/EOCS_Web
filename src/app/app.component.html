@@ -11,8 +11,14 @@
     </div>
 
     <div class="form-inline">
-      <a href="login">Login</a>
-      <a href="register" style="margin-left:1em">Register</a>
+      <div *ngIf="!username else logged">
+        <a href="login">Login</a>
+        <a href="register" style="margin-left:1em">Register</a>
+      </div>
+      <ng-template #logged>
+        Hello {{username}}
+        <a href (click)="logout()" style="margin-left:1em">Logout</a>
+      </ng-template>
     </div>
 
   </nav>

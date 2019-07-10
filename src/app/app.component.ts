@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { StorageService } from './storage.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,19 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'EOCS-web';
+  username = "";
+  constructor(private storageService: StorageService){
+
+  }
+
+  ngOnInit(){
+    this.username = this.storageService.getCurrentUser();
+    this.storageService.triggerEventSession.subscribe(message => {
+      this.username = this.storageService.getCurrentUser();
+   })
+  }
+
+  logout(){
+    this.storageService.logout();
+  }
 }
