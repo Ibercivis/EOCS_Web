@@ -1,0 +1,159 @@
+<div class="container" style="margin:auto">
+
+  <h4>Project: </h4>
+  <div [formGroup]="selectProjectForm">
+    <select id="selectedAccount" formControlName="selectedAccount" (change)="accountChange($event.target.value)"
+      *ngIf="accounts">
+      <option *ngFor="let acc of accounts" [ngValue]="acc.account_name">{{acc.account_name}}</option>
+    </select>
+
+    <button class="btn btn-dark" routerLink="/new_project" style="margin-left:1em">New project</button>
+    <span *ngIf="accounts">
+      <button class="btn btn-dark" (click)="deleteProject()" style="margin-left:1em">Delete project</button>
+      <button class="btn btn-warning" [routerLink]="['/new_voting',projectSelected?projectSelected.account_name:'']"
+        style="margin-left:1em" *ngIf="phase === phase0">Create a vote</button>
+      <button class="btn btn-warning" (click)="deleteVoting()" style="margin-left:1em" *ngIf="phase != phase0">Delete
+        vote</button>
+
+      <b style="margin-left:1em">{{phase}}</b>
+      <p *ngIf="hasDates()">
+        <br />
+        <b>Phase candidates at:</b> {{phase_candidates_at | date:"dd MMM yyyy hh:mm a"}}
+        <b style="margin-left:1em">Phase end:</b> {{phase_end_at | date:"dd MMM yyyy hh:mm a"}}
+      </p>
+    </span>
+  </div>
+
+  <div *ngIf="isAuthenticated() && isPhase(1)">
+    <div *ngIf="!isParticipant else participant">
+      <h3 style="text-align: center">Participate</h3>
+      <div class="border border-light p-5"
+        style="border: 2px; border-radius: 25px; box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1)">
+
+        <div class="columns">
+          <div class="column text-centered">
+            <p>Join this project as a user and vote for a candidate</p>
+            <button class="btn btn-warning" (click)="createParticipation('user')">Join as user</button>
+          </div>
+
+          <div class="column text-centered">
+            <form [formGroup]="candidateForm" (ngSubmit)="createParticipation('candidate')">
+              <p>Join this project as a candidate and vote for tickets</p>
+              <textarea class="textarea" id="candidate_summary" formControlName="candidate_summary"></textarea>
+              <button class="btn btn-warning candidate_button">Join as candidate</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <ng-template #participant>
+      Rol: {{roleParticipant}}
+    </ng-template>
+    <!--Candidates-->
+    <div *ngIf="!voted && roleParticipant == 'user'">
+      <br/>
+      <h4>Vote for one of the candidates:</h4>
+      <div class="cards">
+        <mat-card class="mt-5 card" *ngFor="let candidate of candidates">
+          <mat-card-header>
+            <mat-card-title>{{candidate.user_id}}</mat-card-title>
+          </mat-card-header>
+          <hr />
+          <mat-card-content>
+            <p>
+              {{candidate.candidate_summary}}
+            </p>
+          </mat-card-content>
+          <hr />
+          <mat-card-actions>
+            <button class="btn btn-success" style="margin-left:1em"
+              (click)="delegateVote(candidate.user_id)">Vote</button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+
+    <div *ngIf="voted"><b>Thanks for voting</b></div>
+
+  </div>
+
+  <p></p>
+
+  <div *ngIf="accounts else nodata">
+    <h3>Requirements</h3>
+
+    <div align="center">
+      <button class="btn btn-dark" routerLink="/insert">Insert requirements</button>
+      <p></p>
+    </div>
+
+    <form [formGroup]="searchRequirementForm">
+      <div class="form-group">
+        <div class="inner-addon left-addon">
+          <i class="fas fa-search"></i>
+          <input type="text" class="form-control" placeholder="Search a requirement" id="searchRequirement"
+            formControlName="searchRequirement">
+        </div>
+      </div>
+    </form>
+
+
+    <table class="table table-striped table-bordered table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" (click)="sortType = 'text'; sortReverse = !sortReverse" [class.active]="sortType === 'text'">
+            Requirement
+            <span [hidden]="sortType == 'text' && sortReverse || sortType !='text'">▼</span>
+            <span [hidden]="sortType == 'text' && !sortReverse || sortType !='text'">▲</span>
+            <span [hidden]="sortType == 'text'">▲▼</span>
+          </th>
+          <th scope="col" (click)="sortType = 'tweet_class'; sortReverse = !sortReverse">Class
+            <span [hidden]="sortType == 'tweet_class' && sortReverse || sortType !='tweet_class'">▼</span>
+            <span [hidden]="sortType == 'tweet_class' && !sortReverse || sortType !='tweet_class'">▲</span>
+            <span [hidden]="sortType == 'tweet_class'">▲▼</span>
+          </th>
+          <th scope="col" (click)="sortType = 'from'; sortReverse = !sortReverse">From
+            <span [hidden]="sortType == 'from' && sortReverse || sortType !='from'">▼</span>
+            <span [hidden]="sortType == 'from' && !sortReverse || sortType !='from'">▲</span>
+            <span [hidden]="sortType == 'from'">▲▼</span>
+          </th>
+          <th scope="col" *ngIf="phase === phase3" (click)="sortType = 'votes'; sortReverse = !sortReverse">Votes
+            <span [hidden]="sortType == 'votes' && sortReverse || sortType !='votes'">▼</span>
+            <span [hidden]="sortType == 'votes' && !sortReverse || sortType !='votes'">▲</span>
+            <span [hidden]="sortType == 'votes'">▲▼</span>
+          </th>
+          <th scope="col">Action</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let req of ( filteredOptions | orderBy:sortType:sortReverse ); 
+                    let i = index" [attr.data-index]="i + 1">
+          <th scope="row">{{i+1}}</th>
+          <td style="width: 70%;">{{req.text}}</td>
+          <td>{{req.tweet_class}}</td>
+          <td>{{req.user_name == 'FILE' ? 'File' : req.user_name == 'MANUAL' ? 'Manual' : 'Twitter'}}</td>
+          <td align="right" *ngIf="phase === phase3" style="background-color:coral">{{req.votes}}</td>
+          <td align="center">
+            <span (click)="deleteRequirement(req.status_id)"><i style="cursor: pointer;"
+                class="fas fa-trash-alt"></i></span>
+          </td>
+          <button *ngIf="phase === phase2 && roleParticipant == 'candidate' && req.voted" 
+            class="btn btn-danger voting-button" (click)=vote(req.status_id)>No vote <i class="fas fa-times"></i></button>
+          <button *ngIf="phase === phase2 && roleParticipant == 'candidate' && !req.voted" 
+            class="btn btn-success voting-button" (click)=vote(req.status_id)>Vote <i class="far fa-check-circle"></i>
+            </button>
+
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<ng-template #nodata>
+  <p align="center">There is no data.</p>
+</ng-template>

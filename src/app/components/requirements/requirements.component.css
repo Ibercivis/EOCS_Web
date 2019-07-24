@@ -1,0 +1,67 @@
+.inner-addon {
+    position: relative;
+}
+  
+/* style glyph */
+.inner-addon .fas {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align glyph */
+.left-addon .fas  { left:  0px;}
+.right-addon .fas { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+.textarea {
+  display: block;
+  max-width: 100%;
+  min-width: 100%;
+  padding: .625em;
+  resize: vertical;
+}
+
+.textarea:not([rows]) {
+  max-height: 600px;
+  min-height: 120px;
+}
+
+.columns:not(.is-desktop) {
+  display: flex;
+}
+
+.column {
+  display: block;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: .75rem;
+}
+
+.candidate_button {
+  margin-left:1em;
+  margin-top: 1rem;
+}
+
+.text-centered{
+  text-align: center!important;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.card {
+ flex: 0 1 24%;
+}
+
+.voting-button {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem
+}

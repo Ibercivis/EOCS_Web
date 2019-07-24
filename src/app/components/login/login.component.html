@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="mainbox col-md-7" style="margin:auto">
+
+    <div *ngIf="loginError">
+      <p>
+        <ngb-alert type="danger" [dismissible]="false">
+          <strong>Error!</strong> {{msgError}}
+        </ngb-alert>
+      </p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="border border-light p-5 box">
+      <h2>Login</h2>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" formControlName="username" class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+          <div *ngIf="f.username.errors.required">Username is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary">Login</button>
+        <a [routerLink]="['']" class="btn btn-link">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
