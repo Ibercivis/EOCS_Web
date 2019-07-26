@@ -1,14 +1,15 @@
 <div class="container" style="margin:auto">
 
   <h4>Project: </h4>
-  <div [formGroup]="selectProjectForm">
-    <select id="selectedAccount" formControlName="selectedAccount" (change)="accountChange($event.target.value)"
-      *ngIf="accounts">
-      <option *ngFor="let acc of accounts" [ngValue]="acc.account_name">{{acc.account_name}}</option>
-    </select>
-
+  <div>
+    <span [formGroup]="selectProjectForm">
+      <select id="projectSelected" formControlName="projectSelected" (change)="changeProject($event.target.value)"
+        *ngIf="projects">
+        <option *ngFor="let acc of projects" [ngValue]="acc.account_name">{{acc.account_name}}</option>
+      </select>
+    </span>
     <button class="btn btn-dark" routerLink="/new_project" style="margin-left:1em">New project</button>
-    <span *ngIf="accounts">
+    <span *ngIf="projects">
       <button class="btn btn-dark" (click)="deleteProject()" style="margin-left:1em">Delete project</button>
       <button class="btn btn-warning" [routerLink]="['/new_voting',projectSelected?projectSelected.account_name:'']"
         style="margin-left:1em" *ngIf="phase === phase0">Create a vote</button>
@@ -53,12 +54,12 @@
     </ng-template>
     <!--Candidates-->
     <div *ngIf="!voted && roleParticipant == 'user'">
-      <br/>
+      <br />
       <h4>Vote for one of the candidates:</h4>
       <div class="cards">
         <mat-card class="mt-5 card" *ngFor="let candidate of candidates">
           <mat-card-header>
-            <mat-card-title>{{candidate.user_id}}</mat-card-title>
+            <mat-card-title>{{candidate.name}}</mat-card-title>
           </mat-card-header>
           <hr />
           <mat-card-content>
@@ -73,6 +74,7 @@
           </mat-card-actions>
         </mat-card>
       </div>
+      <br/>
     </div>
 
     <div *ngIf="voted"><b>Thanks for voting</b></div>
@@ -81,7 +83,7 @@
 
   <p></p>
 
-  <div *ngIf="accounts else nodata">
+  <div *ngIf="projects else nodata">
     <h3>Requirements</h3>
 
     <div align="center">
@@ -130,7 +132,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let req of ( filteredOptions | orderBy:sortType:sortReverse ); 
+        <tr *ngFor="let req of ( filteredRequirements | orderBy:sortType:sortReverse ); 
                     let i = index" [attr.data-index]="i + 1">
           <th scope="row">{{i+1}}</th>
           <td style="width: 70%;">{{req.text}}</td>
@@ -141,11 +143,12 @@
             <span (click)="deleteRequirement(req.status_id)"><i style="cursor: pointer;"
                 class="fas fa-trash-alt"></i></span>
           </td>
-          <button *ngIf="phase === phase2 && roleParticipant == 'candidate' && req.voted" 
-            class="btn btn-danger voting-button" (click)=vote(req.status_id)>No vote <i class="fas fa-times"></i></button>
-          <button *ngIf="phase === phase2 && roleParticipant == 'candidate' && !req.voted" 
+          <button *ngIf="phase === phase2 && roleParticipant == 'candidate' && req.voted"
+            class="btn btn-danger voting-button" (click)=deleteVote(req.status_id)>No vote <i
+              class="fas fa-times"></i></button>
+          <button *ngIf="phase === phase2 && roleParticipant == 'candidate' && !req.voted"
             class="btn btn-success voting-button" (click)=vote(req.status_id)>Vote <i class="far fa-check-circle"></i>
-            </button>
+          </button>
 
         </tr>
       </tbody>

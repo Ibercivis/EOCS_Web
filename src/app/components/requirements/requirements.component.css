@@ -54,11 +54,12 @@
 .cards {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: left;
 }
 
 .card {
  flex: 0 1 24%;
+ margin: 0.25em;
 }
 
 .voting-button {

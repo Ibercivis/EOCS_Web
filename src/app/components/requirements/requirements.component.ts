@@ -13,13 +13,20 @@ import { StorageService } from '../../services/storage.service';
 export class RequirementsComponent implements OnInit {
 
   requirements: Requirement[];
-  filteredOptions: Requirement[] = [];searchRequirementForm;
+  filteredRequirements: Requirement[] = [];
+
+  //Forms
+  searchRequirementForm;
   selectProjectForm;
   candidateForm;
+
+  projects;
+  projectSelected;
+
   sortType = 'text';
   sortReverse = false;
-  accounts;
-  projectSelected;
+
+  //Phase
   phase;
   phase_candidates_at;
   phase_end_at;
@@ -27,14 +34,18 @@ export class RequirementsComponent implements OnInit {
   phase1 = Phase.PHASE_1;
   phase2 = Phase.PHASE_2;
   phase3 = Phase.PHASE_3;
-  isParticipant = false;
+
+  //Participation
   roleParticipant;
   candidates;
+  isParticipant = false;
   voted = false;
+  votes = new Array();
+
 
   constructor(private requirementService: RequirementsService, private storageService: StorageService) {
     this.selectProjectForm = new FormGroup({
-      selectedAccount: new FormControl('')
+      projectSelected: new FormControl('')
     });
     this.searchRequirementForm = new FormGroup({
       searchRequirement: new FormControl('')
@@ -54,30 +65,91 @@ export class RequirementsComponent implements OnInit {
       );
   }
 
+  filterRequirements() {
+    if (this.searchRequirementForm.controls['searchRequirement'].value == null) {
+      this.searchRequirementForm.controls['searchRequirement'].value = '';
+    }
+    if (this.requirements != null) {
+      this.filteredRequirements = this.requirements.filter(requirement =>
+        requirement.text.toLowerCase().indexOf(
+          this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
+    }
+  }
+
   getProjects() {
     this.requirementService.getProjects().subscribe(apiData => {
-      this.accounts = apiData;
-      this.requirementService.getProjectsEdemocracy().subscribe(data => {
-        let projectsEdemocracy = data;
-        if (this.accounts !== null && this.accounts.length > 0) {
-          this.projectSelected = this.accounts[0];
-          var account_name = this.accounts[0].account_name;
+      this.projects = apiData;
+      this.requirementService.getEdemocracyProjects().subscribe(data => {
+        let edemocracyProjects = data;
+        if (this.projects !== null && this.projects.length > 0) {
+          this.projectSelected = this.projects[0];
+          let account_name = this.projects[0].account_name;
           this.getRequirementsByProject(account_name);
-          this.selectProjectForm.controls['selectedAccount'].setValue(account_name, { onlySelf: true });
-          this.associateProjectWithEdemocracy(projectsEdemocracy);
+          this.selectProjectForm.controls['projectSelected'].setValue(account_name, { onlySelf: true });
+          this.associateProjectWithEdemocracy(edemocracyProjects);
         }
       });
     });
   }
 
-  associateProjectWithEdemocracy(projectsEdemocracy) {
-    for (let account of this.accounts) {
-      for (let projectEde of projectsEdemocracy) {
-        if (account.account_name == projectEde.title) {
-          account.idEde = projectEde.id;
+  associateProjectWithEdemocracy(edemocracyProjects) {
+    for (let project of this.projects) {
+      for (let edeProject of edemocracyProjects) {
+        if (project.account_name == edeProject.title) {
+          project.idEde = edeProject.id;
           break;
         }
       }
+    }
+  }
+
+  getRequirementsByProject(project) {
+    this.requirementService.getRequirementsByProject(project).subscribe(
+      apiData => {
+        this.filteredRequirements = this.requirements = apiData;
+        console.log("idEde=" + this.projectSelected.idEde);
+        if (this.projectSelected.idEde) {      //call Edemocracy and get more info
+          this.getEdemocracyInfo();
+        } else {
+          this.phase = Phase.PHASE_0;
+        }
+      });
+  }
+
+  private getEdemocracyInfo() {
+    this.getVotes();
+    this.requirementService.getProjectEdemocracy(this.projectSelected.idEde).subscribe(
+      data => {
+        this.fillPhase(data);
+        this.voted = false;
+        if (this.isAuthenticated()) {
+          this.requirementService.getParticipants(this.projectSelected.idEde).subscribe(
+            participants => {
+              console.log("UserID=" + this.storageService.getCurrentSession().userId);
+              this.roleParticipant = "";
+              this.isParticipant = this.hasParticipated(participants, this.storageService.getCurrentSession().userId);
+              console.log(this.isParticipant ? "Participant" : "No partipant");
+              this.managePhase();
+            }
+          )
+        }
+      });
+  }
+
+  private fillPhase(data){
+    this.phase_candidates_at = data.phase_candidates_at;
+    this.phase_end_at = data.phase_end_at;
+    this.phase = this.getProjectPhase();
+    console.log(this.phase);
+  }
+
+  private managePhase(){
+    if (this.roleParticipant == 'user' && this.phase == Phase.PHASE_1) {
+      this.getCandidates();
+      this.hasDelegateVote();
+    }
+    if (this.roleParticipant == 'candidate' && this.phase == Phase.PHASE_2) {
+      this.getParticipationForUser();
     }
   }
 
@@ -88,53 +160,16 @@ export class RequirementsComponent implements OnInit {
     return false;
   }
 
-  accountChange(value) {
+  changeProject(value) {
+    console.log("\n**** Change project ****");
     this.searchRequirementForm.controls['searchRequirement'].setValue(null, { onlySelf: true });
     var account = value.substring(value.indexOf(' ') + 1, value.length);
-    for (let acc of this.accounts) {
+    for (let acc of this.projects) {
       if (acc.account_name == account) {
         this.projectSelected = acc;
       }
     }
     this.getRequirementsByProject(account);
-  }
-
-  getRequirementsByProject(project) {
-    this.requirementService.getRequirementsByProject(project).subscribe(
-      apiData => {
-        this.filteredOptions = this.requirements = apiData;
-        console.log("idEde=" + this.projectSelected.idEde);
-        console.log(this.requirements);
-        if (this.projectSelected.idEde) {        //call Edemocracy and get more info
-          this.getVotes();
-          this.requirementService.getProjectEdemocracy(this.projectSelected.idEde).subscribe(
-            data => {
-              this.phase_candidates_at = data.phase_candidates_at;
-              this.phase_end_at = data.phase_end_at;
-              this.phase = this.getProjectPhase();
-              console.log("Phase = " + this.phase);
-              if (this.isAuthenticated()) {
-                this.requirementService.getParticipants(this.projectSelected.idEde).subscribe(
-                  participants => {
-                    console.log(this.storageService.getCurrentSession().userId);
-                    console.log(participants);
-                    this.isParticipant = this.hasParticipated(participants, this.storageService.getCurrentSession().userId);
-                    console.log('role=' + this.roleParticipant + ' phase=' + this.phase);
-                    if (this.roleParticipant == 'user' && this.phase == Phase.PHASE_1) {
-                      this.getCandidates();
-                      this.hasDelegateVote();
-                    }
-                    if (this.roleParticipant == 'candidate' && this.phase == Phase.PHASE_2) {
-                      this.getParticipationForUser();
-                    }
-                  }
-                )
-              }
-            });
-        } else {
-          this.phase = Phase.PHASE_0;
-        }
-      });
   }
 
   isAuthenticated(): boolean {
@@ -145,6 +180,7 @@ export class RequirementsComponent implements OnInit {
     for (var i = 0; i < participants.length; i++) {
       if (participants[i].user_id == userId) {
         this.roleParticipant = participants[i].role;
+        console.log('Role=' + this.roleParticipant);
         return true;
       }
     }
@@ -156,6 +192,14 @@ export class RequirementsComponent implements OnInit {
       participants => {
         this.candidates = participants.filter(participant =>
           participant.role == 'candidate');
+          for(let candidate of this.candidates){
+            this.requirementService.getParticipantName(candidate.user_id).subscribe(
+              data => {                
+                candidate.name = data.username;
+              }
+            );
+          }
+          
       });
   }
 
@@ -180,25 +224,14 @@ export class RequirementsComponent implements OnInit {
     return phases[phaseId] === this.phase;
   }
 
-  filterRequirements() {
-    if (this.searchRequirementForm.controls['searchRequirement'].value == null) {
-      this.searchRequirementForm.controls['searchRequirement'].value = '';
-    }
-    if (this.requirements != null) {
-      this.filteredOptions = this.requirements.filter(requirement =>
-        requirement.text.toLowerCase().indexOf(
-          this.searchRequirementForm.controls['searchRequirement'].value.toLowerCase()) !== -1);
-    }
-  }
-
-  deleteRequirement(req) {
-    console.log('Delete requirement: ' + req);
-    this.requirementService.deleteRequirement(req)
+  deleteRequirement(requirementId) {
+    console.log('Delete requirement: ' + requirementId);
+    this.requirementService.deleteRequirement(requirementId)
       .subscribe(data => {
         let index = 0;
-        for (let obj of this.filteredOptions) {
-          if (obj['status_id'] == req) {
-            this.filteredOptions.splice(index, 1);
+        for (let req of this.filteredRequirements) {
+          if (req['status_id'] == requirementId) {
+            this.filteredRequirements.splice(index, 1);
             break;
           }
           index++;
@@ -209,22 +242,22 @@ export class RequirementsComponent implements OnInit {
   }
 
   deleteProject() {
-    let selectedAccount = this.selectProjectForm.controls['selectedAccount'].value;
-    console.log('Delete project: ' + selectedAccount);
-    this.requirementService.deleteProject(selectedAccount)
+    let projectSelected = this.projectSelected.account_name;
+    console.log('Delete project: ' + projectSelected);
+    this.requirementService.deleteProject(projectSelected)
       .subscribe(data => {
         alert('Project account deleted');
         //Delete all Project's requirements
-        this.deleteAllRequirements(selectedAccount);
+        this.deleteAllRequirements(projectSelected);
         this.getProjects();
       }, error => {
         console.log('Error deleting project');
       });
   }
 
-  deleteAllRequirements(selectedAccount) {
-    console.log('Delete requirements from: ' + selectedAccount);
-    this.requirementService.deleteProjectRequirements(selectedAccount)
+  deleteAllRequirements(projectSelected) {
+    console.log('Delete requirements from: ' + projectSelected);
+    this.requirementService.deleteProjectRequirements(projectSelected)
       .subscribe(data => {
         console.log('Success deleting project requirements');
       }, error => {
@@ -233,7 +266,14 @@ export class RequirementsComponent implements OnInit {
   }
 
   deleteVoting() {
-    alert("Delete voting..");
+    this.requirementService.deleteVotingProject(this.projectSelected.account_name, this.projectSelected.idEde)
+      .subscribe(data => {
+        console.log('Success deleting voting project');
+        this.projectSelected.idEde = null;
+        this.getRequirementsByProject(this.projectSelected.account_name);
+      }, error => {
+        console.log('Error deleting voting project');
+      });
   }
 
   createParticipation(rol) {
@@ -243,7 +283,6 @@ export class RequirementsComponent implements OnInit {
       candidate_summary = this.candidateForm.controls['candidate_summary'].value;
       this.candidateForm.controls['candidate_summary'].setValue(null, { onlySelf: true });
     }
-
     this.requirementService.createParticipation(session, rol, this.projectSelected.idEde, candidate_summary).subscribe(data => {
       console.log('Success participation');
       this.getRequirementsByProject(this.projectSelected.account_name);
@@ -253,8 +292,10 @@ export class RequirementsComponent implements OnInit {
   }
 
   delegateVote(userId) {
+    let participation = new Array();
+    participation.push(userId);
     this.requirementService.vote(this.projectSelected.idEde,
-      this.storageService.getCurrentSession().token, userId).subscribe(result => {
+      this.storageService.getCurrentSession().token, participation).subscribe(result => {
         this.voted = true;
       });
   }
@@ -262,82 +303,98 @@ export class RequirementsComponent implements OnInit {
   hasDelegateVote() {
     this.requirementService.getProjectParticipationForUser(this.projectSelected.idEde,
       this.storageService.getCurrentSession().token).subscribe(result => {
-        console.log(result);
         if (result && typeof result.votes !== 'undefined' && result.votes.length > 0) {
           this.voted = true;
-          console.log("ha delegado voto");
+          console.log("Vote already delegated");
         } else {
           this.voted = false;
-          console.log("no ha delegado voto");
+          console.log("Vote not yet delegated");
         }
       });
   }
 
-  getParticipationForUser(){
+  getParticipationForUser() {
     this.requirementService.getProjectParticipationForUser(this.projectSelected.idEde,
       this.storageService.getCurrentSession().token).subscribe(result => {
-        console.log(result);
         if (result && typeof result.votes !== 'undefined' && result.votes.length > 0) {
-          //TODO GUardar result.votes para la hora de votar o borrar voto
-          for(let vote of result.votes){
-            console.log("Ha sido votado:" + vote.external_id);
-            for(let req of this.requirements){              
-              if(req.status_id == vote.external_id){               
-                req.voted = true;
-              }
-            }
-            this.filteredOptions = this.requirements;
+          this.votes = new Array();
+          for (let i = 0; i < result.votes.length; i++) {
+            this.votes[i] = result.votes[i].id;
           }
-        } 
+          for (let vote of result.votes) {
+            this.registerVoted(vote.external_id, true);
+          }
+        }
       });
   }
 
+  private registerVoted(externalId, voted) {
+    for (let req of this.requirements) {
+      if (req.status_id == externalId) {
+        req.voted = voted;
+      }
+    }
+    this.filteredRequirements = this.requirements;
+  }
+
   vote(externalId) {
-    console.log("externalID=" + externalId);
     this.requirementService.getTicketsEdemocracy(this.projectSelected.idEde)
       .subscribe(data => {
-        console.log(data);
         this.findTicketAndVote(data, externalId);
       });
   }
 
-  findTicketAndVote(data, externalId){
+  findTicketAndVote(data, externalId) {
     let tickets = data;
     let ticketFound = false;
+    let voted = false;
     for (let ticket of tickets) {
       if (ticket.external_id == externalId) {
         ticketFound = true;
         let ticketId = ticket.id;
-        console.log("ticketId=" + ticketId);
+        let voteFound = false;
+        if (this.votes) {
+          for (let vote of this.votes) {
+            if (vote == ticketId) {
+              voteFound = true;
+              break;
+            }
+          }
+        }
+        if (voteFound) {
+          this.votes = this.votes.filter(element => element != ticketId);
+        } else {
+          this.votes.push(ticketId);
+          voted = true;
+        }
         this.requirementService.vote(this.projectSelected.idEde,
-          this.storageService.getCurrentSession().token, ticketId).subscribe(result => {
-            console.log("vote ended");
-            console.log(result);
-            this.voted = true;
+          this.storageService.getCurrentSession().token, this.votes).subscribe(result => {
+            this.registerVoted(externalId, voted);
           });
+        break; //Already found
       }
     }
-    if(!ticketFound){
+    if (!ticketFound) {
       alert("Vote hasn't been completed because ticket hasn't been found. This ticket could have been created after the voting started");
     }
   }
 
-  deleteVote(requirementId) {
-
+  deleteVote(externalId) {
+    this.requirementService.getTicketsEdemocracy(this.projectSelected.idEde)
+      .subscribe(data => {
+        this.findTicketAndVote(data, externalId);
+      });
   }
 
-  getVotes(){
+  getVotes() {
     this.requirementService.getReport(this.projectSelected.idEde).subscribe(result => {
-      for(let ticket of result.votes.tickets){
-        console.log("ticket id:" + ticket.ticket.external_id + " - votos: " + ticket.votes_received);
-        for(let req of this.requirements){
-          console.log("status_id:" + req.status_id);
-          if(req.status_id == ticket.ticket.external_id){
-            console.log("aaaa");
+      for (let ticket of result.votes.tickets) {
+        for (let req of this.requirements) {
+          if (req.status_id == ticket.ticket.external_id) {
             req.votes = ticket.votes_received;
           }
         }
-        this.filteredOptions = this.requirements;
+        this.filteredRequirements = this.requirements;
       }
     });
   }

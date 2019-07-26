@@ -33,7 +33,7 @@ export class NewProjectComponent implements OnInit {
       },
       error => {
         console.log(error);
-        alert('No added');
+        alert("No added. It can be already exist or twitter account doesn't exist");
       }
     );
   }
