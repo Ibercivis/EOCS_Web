@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup,FormControl } from '@angular/forms';
 import { RequirementsService } from '../../services/requirements.service';
-import { ReqClass } from '../../enums/req-class.enum';
 
 @Component({
   selector: 'app-insert-requirement',
@@ -15,7 +14,6 @@ export class InsertRequirementComponent implements OnInit {
   account = "";
   selectProjectForm;
   accounts;
-  reqClass;
 
   constructor(private requirementService : RequirementsService) {
     this.selectProjectForm= new FormGroup({
@@ -25,7 +23,6 @@ export class InsertRequirementComponent implements OnInit {
       new_requirement: new FormControl(''),
       selectedClass: new FormControl('')
     });
-    this.reqClass = Object.values(ReqClass).filter(value => typeof value !== 'number');
    }
 
   ngOnInit() {
@@ -33,8 +30,7 @@ export class InsertRequirementComponent implements OnInit {
   }
 
   insertRequirement(){
-    this.requirementService.insertRequirement(this.account, 
-      this.form.value.new_requirement,this.form.value.selectedClass, this.from).subscribe(
+    this.requirementService.insertAndClassifyRequirement(this.account, this.form.value.new_requirement, this.from).subscribe(
       data => {
         this.form.controls['new_requirement'].setValue("");
         alert('Requirement added');

@@ -22,7 +22,7 @@
       </div>
     </div>
     <button *ngIf="contentFile" type="submit" class="btn btn-success">Process file</button>
-    <div *ngIf="requirements" style="margin:auto">
+    <div *ngIf="requirements && processed" style="margin:auto">
       <h5>File proccessed</h5>
     </div>
   </form>

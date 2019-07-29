@@ -15,6 +15,7 @@ export class UploadFileComponent implements OnInit {
   requirements;
   contentFile;
   filename;
+  processed = false;
 
   constructor(private requirementService: RequirementsService, private parent: InsertRequirementComponent) {
     this.uploadFileForm = new FormGroup({
@@ -22,25 +23,25 @@ export class UploadFileComponent implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.processed = false;
+   }
 
   onSubmit() {
+    this.processed = false;
     this.requirements = this.contentFile.filter(function (el) {
       return el != null && el.length > 1;
     });
     console.log(this.requirements);
 
     for (let req of this.requirements) {
-      console.log(req);
-      let requirement = req.split(",");
-      if(requirement.length > 1){
-        this.requirementService.insertRequirement(this.parent.account, requirement[0], requirement[1].trim(), this.from).subscribe(
-          data => console.log("Added"), err => console.log("Error " + err));
-      }
+      this.requirementService.insertAndClassifyRequirement(this.parent.account, req, this.from).subscribe(
+        data => this.processed = true, err => console.log("Error " + err));
     }
   }
 
   onFileChange(event) {
+    this.processed = false;
     let reader = new FileReader();
     if (event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
@@ -58,6 +59,7 @@ export class UploadFileComponent implements OnInit {
     this.contentFile = "";
     this.requirements = "";
     this.uploadFileForm.reset();
+    this.processed = false;
   }
 
 }

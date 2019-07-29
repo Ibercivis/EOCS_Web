@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { ReqClass } from '../enums/req-class.enum';
+
 
 @Injectable({
   providedIn: 'root'
@@ -57,13 +57,25 @@ export class RequirementsService {
     }));
   }
 
-  insertRequirement(account, text, reqClass, from): Observable<any> {
+  insertAndClassifyRequirement(account, text, from): any {
+    
+    const insertObservable = new Observable(observer => {
+      var status_id = (Math.floor(Math.random() * (999999 - 100000)) + 100000);
+      this.classifyRequirement(status_id, text, from, account).subscribe(data => {
+        this.insertRequirement(status_id, account, data[0].sentiment, data[0].tweet_class, from, text)
+          .subscribe();
+      });
+      observer.next();
+      
+    });
+    return insertObservable;
+  }
+
+  insertRequirement(status_id, account, sentiment, reqClass, from, text): Observable<any> {
     const url = environment.microservices_url + ":9682/hitec/repository/twitter/store/tweet/";
-   
-    var status_id = (Math.floor(Math.random() * (999999 - 100000)) + 100000);
-    var body = [
+    let body = [
       {
-        "sentiment": "",
+        "sentiment": sentiment,
         "sentiment_score": 0,
         "status_id": "" + status_id,
         "in_reply_to_screen_name": account,
@@ -75,39 +87,12 @@ export class RequirementsService {
         "lang": "en",
         "retweet_count": 0
       }
-    ];
-    this.classifyRequirement(status_id, text, from, account).subscribe(data =>{
-      console.log(data);
-    //  if (Object.values(ReqClass).includes(reqClass)) {
-    //    reqClass = reqClass.toLowerCase();
-    //  } else {
-        reqClass = ReqClass.IRRELEVANT;
-        var body = [
-          {
-            "sentiment": "",
-            "sentiment_score": 0,
-            "status_id": "" + status_id,
-            "in_reply_to_screen_name": account,
-            "tweet_class": reqClass,
-            "user_name": from,
-            "created_at": 20190601,
-            "favorite_count": 0,
-            "text": text,
-            "lang": "en",
-            "retweet_count": 0
-          }
-        ];
-        return this.httpClient.post(url, JSON.stringify(body));
-  //    }
-
-    });
+    ];    
     return this.httpClient.post(url, JSON.stringify(body));
-  
   }
 
   classifyRequirement(status_id, text, from, account): Observable<any> {
-    const url = environment.microservices_url + ":9655/hitec/classify/domain/tweets/lang/en";
-    
+    const url = environment.microservices_url + ":9655/hitec/classify/domain/tweets/lang/en";    
     var body =[{
       "created_at": 20180501,
       "favorite_count": 0,
