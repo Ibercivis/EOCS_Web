@@ -117,6 +117,11 @@
             <span [hidden]="sortType == 'tweet_class' && !sortReverse || sortType !='tweet_class'">▲</span>
             <span [hidden]="sortType == 'tweet_class'">▲▼</span>
           </th>
+          <th scope="col" (click)="sortType = 'sentiment'; sortReverse = !sortReverse">Sentiment
+            <span [hidden]="sortType == 'sentiment' && sortReverse || sortType !='sentiment'">▼</span>
+            <span [hidden]="sortType == 'sentiment' && !sortReverse || sortType !='sentiment'">▲</span>
+            <span [hidden]="sortType == 'sentiment'">▲▼</span>
+          </th>
           <th scope="col" (click)="sortType = 'from'; sortReverse = !sortReverse">From
             <span [hidden]="sortType == 'from' && sortReverse || sortType !='from'">▼</span>
             <span [hidden]="sortType == 'from' && !sortReverse || sortType !='from'">▲</span>
@@ -137,6 +142,7 @@
           <th scope="row">{{i+1}}</th>
           <td style="width: 70%;">{{req.text}}</td>
           <td>{{req.tweet_class}}</td>
+          <td>{{req.sentiment}}</td>
           <td>{{req.user_name == 'FILE' ? 'File' : req.user_name == 'MANUAL' ? 'Manual' : 'Twitter'}}</td>
           <td align="right" *ngIf="phase === phase3" style="background-color:coral">{{req.votes}}</td>
           <td align="center">

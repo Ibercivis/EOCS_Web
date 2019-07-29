@@ -58,17 +58,14 @@ export class RequirementsService {
   }
 
   insertRequirement(account, text, reqClass, from): Observable<any> {
-    const url = environment.microservices_url + ":9682/hitec/repository/twitter/store/tweet/"
-    if (Object.values(ReqClass).includes(reqClass)) {
-      reqClass = reqClass.toLowerCase();
-    } else {
-      reqClass = ReqClass.IRRELEVANT;
-    }
+    const url = environment.microservices_url + ":9682/hitec/repository/twitter/store/tweet/";
+   
+    var status_id = (Math.floor(Math.random() * (999999 - 100000)) + 100000);
     var body = [
       {
         "sentiment": "",
         "sentiment_score": 0,
-        "status_id": "" + (Math.floor(Math.random() * (999999 - 100000)) + 100000),
+        "status_id": "" + status_id,
         "in_reply_to_screen_name": account,
         "tweet_class": reqClass,
         "user_name": from,
@@ -79,6 +76,48 @@ export class RequirementsService {
         "retweet_count": 0
       }
     ];
+    this.classifyRequirement(status_id, text, from, account).subscribe(data =>{
+      console.log(data);
+    //  if (Object.values(ReqClass).includes(reqClass)) {
+    //    reqClass = reqClass.toLowerCase();
+    //  } else {
+        reqClass = ReqClass.IRRELEVANT;
+        var body = [
+          {
+            "sentiment": "",
+            "sentiment_score": 0,
+            "status_id": "" + status_id,
+            "in_reply_to_screen_name": account,
+            "tweet_class": reqClass,
+            "user_name": from,
+            "created_at": 20190601,
+            "favorite_count": 0,
+            "text": text,
+            "lang": "en",
+            "retweet_count": 0
+          }
+        ];
+        return this.httpClient.post(url, JSON.stringify(body));
+  //    }
+
+    });
+    return this.httpClient.post(url, JSON.stringify(body));
+  
+  }
+
+  classifyRequirement(status_id, text, from, account): Observable<any> {
+    const url = environment.microservices_url + ":9655/hitec/classify/domain/tweets/lang/en";
+    
+    var body =[{
+      "created_at": 20180501,
+      "favorite_count": 0,
+      "retweet_count": 0,
+      "text" : text,
+      "status_id": status_id,
+      "user_name": from,
+      "in_reply_to_screen_name": account,
+      "lang": "en"
+      }];
     return this.httpClient.post(url, JSON.stringify(body));
   }
 
