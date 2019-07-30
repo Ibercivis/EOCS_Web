@@ -6,9 +6,11 @@ import { InsertRequirementComponent } from './components/insert-requirement/inse
 import { NewEdemocracyProjectComponent } from './components/new-edemocracy-project/new-edemocracy-project.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
+import { FrontpageComponent } from './frontpage/frontpage.component';
 
 const routes: Routes = [
-  {path:'', component: RequirementsComponent},
+  {path:'', component: FrontpageComponent},
+  {path:'project/:project', component: RequirementsComponent},
   {path:'insert', component: InsertRequirementComponent},
   {path:'new_project', component: NewProjectComponent},
   {path:'new_voting/:project', component: NewEdemocracyProjectComponent},

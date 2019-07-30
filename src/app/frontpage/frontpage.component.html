@@ -1,0 +1,13 @@
+<h1 align="center">Projects</h1>
+<div><button class="btn btn-dark" routerLink="/new_project">New project</button></div>
+
+<div class="cards">
+  <mat-card class="mt-5 card" *ngFor="let project of projects" style="background-color:#1273a0;">
+    <mat-card-header>
+      <mat-card-title>
+        <a style="text-decoration: none;color: inherit; color:white;cursor: pointer;" 
+        (click)="goProject(project)">{{project.account_name}}</a>
+      </mat-card-title>
+    </mat-card-header>
+  </mat-card>
+</div>

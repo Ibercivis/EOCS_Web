@@ -15,6 +15,7 @@ import { InsertRequirementComponent } from './components/insert-requirement/inse
 import { NewEdemocracyProjectComponent } from './components/new-edemocracy-project/new-edemocracy-project.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
+import { FrontpageComponent } from './frontpage/frontpage.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { LoginComponent } from './components/login/login.component';
     InsertRequirementComponent,
     NewEdemocracyProjectComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    FrontpageComponent
   ],
   imports: [
     BrowserModule,

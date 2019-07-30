@@ -51,17 +51,6 @@
   text-align: center!important;
 }
 
-.cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: left;
-}
-
-.card {
- flex: 0 1 24%;
- margin: 0.25em;
-}
-
 .voting-button {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem

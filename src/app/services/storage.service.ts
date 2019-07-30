@@ -10,12 +10,15 @@ export class StorageService {
   private localStorageService;
   private currentSession : Session = null;
   keySession = "currentSession";
+  keyProject = "selectedProject";
   triggerEventSession = new BehaviorSubject(false);
   triggerEventObs = this.triggerEventSession.asObservable();
+  project;
 
   constructor() {
     this.localStorageService = localStorage;
     this.currentSession = this.loadSessionData();
+    this.project = this.loadProjectData();
    }
 
   setCurrentSession(session: Session): void {
@@ -58,4 +61,24 @@ export class StorageService {
   logout(): void{
     this.removeCurrentSession();
   }
+
+  setSelectedProject(project){
+    this.project=project;
+    this.localStorageService.setItem(this.keyProject, JSON.stringify(project));
+  }
+
+  loadProjectData(): Session{
+    var projectStr = this.localStorageService.getItem(this.keyProject);
+    return (projectStr) ? <Session> JSON.parse(projectStr) : null;
+  }
+
+  getSelectedProject(){
+    return this.project;
+  }
+
+  removeSelectedProject(): void {
+    this.localStorageService.removeItem(this.keyProject);
+    this.project = null;
+  }
+  
 }

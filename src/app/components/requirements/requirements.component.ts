@@ -4,6 +4,7 @@ import { Requirement } from '../../model/Requirement';
 import { RequirementsService } from '../../services/requirements.service';
 import { Phase } from '../../enums/phase.enum';
 import { StorageService } from '../../services/storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-requirements',
@@ -43,7 +44,8 @@ export class RequirementsComponent implements OnInit {
   votes = new Array();
 
 
-  constructor(private requirementService: RequirementsService, private storageService: StorageService) {
+  constructor(private requirementService: RequirementsService, private storageService: StorageService,
+      private router: Router) {
     this.selectProjectForm = new FormGroup({
       projectSelected: new FormControl('')
     });
@@ -55,8 +57,12 @@ export class RequirementsComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.getProjects();
+  ngOnInit() {   
+    this.projectSelected = this.storageService.getSelectedProject();
+    if (this.projectSelected == null) {
+      this.router.navigateByUrl('');
+    }
+    this.getMoreInfoProject();
     this.searchRequirementForm.controls['searchRequirement'].valueChanges
       .subscribe(
         value => {
@@ -76,29 +82,20 @@ export class RequirementsComponent implements OnInit {
     }
   }
 
-  getProjects() {
-    this.requirementService.getProjects().subscribe(apiData => {
-      this.projects = apiData;
-      this.requirementService.getEdemocracyProjects().subscribe(data => {
-        let edemocracyProjects = data;
-        if (this.projects !== null && this.projects.length > 0) {
-          this.projectSelected = this.projects[0];
-          let account_name = this.projects[0].account_name;
-          this.getRequirementsByProject(account_name);
-          this.selectProjectForm.controls['projectSelected'].setValue(account_name, { onlySelf: true });
-          this.associateProjectWithEdemocracy(edemocracyProjects);
-        }
-      });
+  getMoreInfoProject() {
+    this.requirementService.getEdemocracyProjects().subscribe(data => {
+      let edemocracyProjects = data;
+      let account_name = this.projectSelected.account_name;
+      this.getRequirementsByProject(account_name);
+      this.associateProjectWithEdemocracy(edemocracyProjects);
     });
   }
 
   associateProjectWithEdemocracy(edemocracyProjects) {
-    for (let project of this.projects) {
-      for (let edeProject of edemocracyProjects) {
-        if (project.account_name == edeProject.title) {
-          project.idEde = edeProject.id;
-          break;
-        }
+    for (let edeProject of edemocracyProjects) {
+      if (this.projectSelected.account_name == edeProject.title) {
+        this.projectSelected.idEde = edeProject.id;
+        break;
       }
     }
   }
@@ -136,14 +133,14 @@ export class RequirementsComponent implements OnInit {
       });
   }
 
-  private fillPhase(data){
+  private fillPhase(data) {
     this.phase_candidates_at = data.phase_candidates_at;
     this.phase_end_at = data.phase_end_at;
     this.phase = this.getProjectPhase();
     console.log(this.phase);
   }
 
-  private managePhase(){
+  private managePhase() {
     if (this.roleParticipant == 'user' && this.phase == Phase.PHASE_1) {
       this.getCandidates();
       this.hasDelegateVote();
@@ -158,18 +155,6 @@ export class RequirementsComponent implements OnInit {
       return true;
     }
     return false;
-  }
-
-  changeProject(value) {
-    console.log("\n**** Change project ****");
-    this.searchRequirementForm.controls['searchRequirement'].setValue(null, { onlySelf: true });
-    var account = value.substring(value.indexOf(' ') + 1, value.length);
-    for (let acc of this.projects) {
-      if (acc.account_name == account) {
-        this.projectSelected = acc;
-      }
-    }
-    this.getRequirementsByProject(account);
   }
 
   isAuthenticated(): boolean {
@@ -192,14 +177,13 @@ export class RequirementsComponent implements OnInit {
       participants => {
         this.candidates = participants.filter(participant =>
           participant.role == 'candidate');
-          for(let candidate of this.candidates){
-            this.requirementService.getParticipantName(candidate.user_id).subscribe(
-              data => {                
-                candidate.name = data.username;
-              }
-            );
-          }
-          
+        for (let candidate of this.candidates) {
+          this.requirementService.getParticipantName(candidate.user_id).subscribe(
+            data => {
+              candidate.name = data.username;
+            }
+          );
+        }
       });
   }
 
@@ -249,7 +233,8 @@ export class RequirementsComponent implements OnInit {
         alert('Project account deleted');
         //Delete all Project's requirements
         this.deleteAllRequirements(projectSelected);
-        this.getProjects();
+        this.deleteVoting();
+        this.router.navigateByUrl('');
       }, error => {
         console.log('Error deleting project');
       });

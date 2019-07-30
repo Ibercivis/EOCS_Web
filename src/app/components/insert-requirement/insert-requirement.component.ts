@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup,FormControl } from '@angular/forms';
 import { RequirementsService } from '../../services/requirements.service';
+import { StorageService } from 'src/app/services/storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-insert-requirement',
@@ -11,22 +13,21 @@ export class InsertRequirementComponent implements OnInit {
 
   form: FormGroup;
   from = "MANUAL";
+  projectSelected;
   account = "";
-  selectProjectForm;
-  accounts;
 
-  constructor(private requirementService : RequirementsService) {
-    this.selectProjectForm= new FormGroup({
-      selectedAccount: new FormControl('')
-    });
+  constructor(private requirementService : RequirementsService, private storageService: StorageService, private router: Router) {
     this.form= new FormGroup({
-      new_requirement: new FormControl(''),
-      selectedClass: new FormControl('')
+      new_requirement: new FormControl('')
     });
    }
 
   ngOnInit() {
-    this.getProjects();
+    this.projectSelected = this.storageService.getSelectedProject();
+    if(this.projectSelected == null){
+      this.router.navigateByUrl('');
+    }
+    this.account = this.projectSelected.account_name;
   }
 
   insertRequirement(){
@@ -39,17 +40,6 @@ export class InsertRequirementComponent implements OnInit {
 
   accountChange(value){
     this.account = value.substring(value.indexOf(' ')+ 1,value.length);
-  }
-
-  getProjects(){
-    this.requirementService.getProjects().subscribe(apiData => {
-      this.accounts = apiData;
-      if(this.accounts !== null && this.accounts.length > 0){
-        var account_name = this.accounts[0].account_name;
-        this.selectProjectForm.controls['selectedAccount'].setValue(account_name, { onlySelf: true });
-        this.account = account_name;
-      }
-    });
   }
 
 }

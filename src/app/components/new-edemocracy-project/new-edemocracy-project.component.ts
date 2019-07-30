@@ -67,7 +67,7 @@ export class NewEdemocracyProjectComponent implements OnInit {
         if (data) {
           console.log("Added in edemocracy");
           alert('Vote created');
-          this.router.navigateByUrl('');
+          this.router.navigateByUrl('project/' + this.project);
         }
       },
       error => {

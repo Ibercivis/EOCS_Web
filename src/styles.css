@@ -6,3 +6,20 @@
     border-radius: 25px;
     box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1)
 }
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+  }
+  
+.card {
+   flex: 0 1 24%;
+   margin: 0.25em;
+  }
+ 
+footer {
+    clear: both;
+    position: relative;
+    margin-top: 150px;
+}

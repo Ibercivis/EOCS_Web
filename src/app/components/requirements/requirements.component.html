@@ -1,22 +1,19 @@
 <div class="container" style="margin:auto">
 
-  <h4>Project: </h4>
+  <h4 align="center">Project: {{projectSelected.account_name}}</h4>
+  <br/>
   <div>
-    <span [formGroup]="selectProjectForm">
-      <select id="projectSelected" formControlName="projectSelected" (change)="changeProject($event.target.value)"
-        *ngIf="projects">
-        <option *ngFor="let acc of projects" [ngValue]="acc.account_name">{{acc.account_name}}</option>
-      </select>
-    </span>
-    <button class="btn btn-dark" routerLink="/new_project" style="margin-left:1em">New project</button>
-    <span *ngIf="projects">
-      <button class="btn btn-dark" (click)="deleteProject()" style="margin-left:1em">Delete project</button>
+    <span *ngIf="projectSelected">
+      <button class="btn btn-dark" (click)="deleteProject()">Delete project</button>
       <button class="btn btn-warning" [routerLink]="['/new_voting',projectSelected?projectSelected.account_name:'']"
         style="margin-left:1em" *ngIf="phase === phase0">Create a vote</button>
       <button class="btn btn-warning" (click)="deleteVoting()" style="margin-left:1em" *ngIf="phase != phase0">Delete
         vote</button>
 
       <b style="margin-left:1em">{{phase}}</b>
+      <span style="margin-left:1em" *ngIf="roleParticipant">Rol: {{roleParticipant}}</span>
+      <button style="float: right;" class="btn btn-dark" routerLink="">Go to main page</button>
+
       <p *ngIf="hasDates()">
         <br />
         <b>Phase candidates at:</b> {{phase_candidates_at | date:"dd MMM yyyy hh:mm a"}}
@@ -26,7 +23,7 @@
   </div>
 
   <div *ngIf="isAuthenticated() && isPhase(1)">
-    <div *ngIf="!isParticipant else participant">
+    <div *ngIf="!isParticipant">
       <h3 style="text-align: center">Participate</h3>
       <div class="border border-light p-5"
         style="border: 2px; border-radius: 25px; box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1)">
@@ -49,9 +46,7 @@
 
 
     </div>
-    <ng-template #participant>
-      Rol: {{roleParticipant}}
-    </ng-template>
+
     <!--Candidates-->
     <div *ngIf="!voted && roleParticipant == 'user'">
       <br />
@@ -83,7 +78,7 @@
 
   <p></p>
 
-  <div *ngIf="projects else nodata">
+  <div *ngIf="projectSelected else nodata">
     <h3>Requirements</h3>
 
     <div align="center">
