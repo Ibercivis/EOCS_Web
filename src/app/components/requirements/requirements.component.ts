@@ -114,7 +114,9 @@ export class RequirementsComponent implements OnInit {
   }
 
   private getEdemocracyInfo() {
-    this.getVotes();
+    if(this.requirements){
+      this.getVotes();
+    }      
     this.requirementService.getProjectEdemocracy(this.projectSelected.idEde).subscribe(
       data => {
         this.fillPhase(data);
@@ -233,7 +235,9 @@ export class RequirementsComponent implements OnInit {
         alert('Project account deleted');
         //Delete all Project's requirements
         this.deleteAllRequirements(projectSelected);
-        this.deleteVoting();
+        if(this.projectSelected.idEde){
+          this.deleteVoting();
+        }        
         this.router.navigateByUrl('');
       }, error => {
         console.log('Error deleting project');
